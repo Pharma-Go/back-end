@@ -11,10 +11,7 @@ import { EstablishmentModule } from './establishment/establishment.module';
 import { ProductModule } from './product/product.module';
 import { CategoryModule } from './category/category.module';
 import { InvoiceModule } from './invoice/invoice.module';
-import { InstallmentModule } from './installment/installment.module';
 import { ScheduleModule } from "@nestjs/schedule";
-import { AddressController } from './address/address.controller';
-import { AddressModule } from './address/address.module';
 
 @Module({
   imports: [
@@ -27,10 +24,8 @@ import { AddressModule } from './address/address.module';
     ProductModule,
     CategoryModule,
     InvoiceModule,
-    InstallmentModule,
-    AddressModule,
   ],
-  controllers: [AppController, AddressController],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
