@@ -65,22 +65,12 @@ export class UserController {
     return user;
   }
 
-  @Get('bestSeller')
-  public async getBestSeller() {
-    return this.service.getBestSeller();
-  }
-
   @Put(':id')
   async putOne(
     @Param('id') id: string,
     @Body() user: User,
   ) {
     return await this.service.updateUser(id, user);
-  }
-
-  @Post('search')
-  public async searchUsers(@Body() body: { username: string }): Promise<User[]> {
-    return await this.service.searchUsers(body);
   }
 
 }

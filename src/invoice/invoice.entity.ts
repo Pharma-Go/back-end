@@ -21,24 +21,6 @@ export class Invoice extends BaseEntity<Invoice> {
   })
   title: string;
 
-  @ManyToOne(
-    () => User,
-    user => user.madeInvoices,
-    {
-      cascade: true,
-    },
-  )
-  seller: User;
-
-  @ManyToOne(
-    () => User,
-    user => user.purchasedInvoices,
-    {
-      cascade: true,
-    },
-  )
-  buyer: User;
-
   @JoinTable()
   @ManyToMany(
     () => Product,
@@ -48,4 +30,11 @@ export class Invoice extends BaseEntity<Invoice> {
     },
   )
   products: Product[];
+
+  @ManyToOne(
+    () => User,
+    user => user.invoices,
+    { cascade: true },
+  )
+  buyer: User;
 }

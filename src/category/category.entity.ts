@@ -1,5 +1,6 @@
+import { Establishment } from 'src/establishment/establishment.entity';
 import { Product } from 'src/product/product.entity';
-import { Entity, Column, OneToMany } from 'typeorm';
+import { Entity, Column, OneToMany, ManyToOne, ManyToMany } from 'typeorm';
 import { BaseEntity } from '../base-entity';
 
 // import { Product } from '../product/product.entity';
@@ -20,4 +21,13 @@ export class Category extends BaseEntity<Category> {
     },
   )
   products: Product[];
+
+  @OneToMany(
+    () => Establishment,
+    establishment => establishment.category,
+    {
+      cascade: true,
+    },
+  )
+  establishments: Establishment[];
 }

@@ -16,7 +16,7 @@ services:
     image: dpage/pgadmin4
     environment:
       PGADMIN_DEFAULT_EMAIL: "pharmago@pharma.go"
-      PGADMIN_DEFAULT_PASSWORD: "abc"
+      PGADMIN_DEFAULT_PASSWORD: "1122334455"
     ports:
       - "5050:80"
     depends_on:

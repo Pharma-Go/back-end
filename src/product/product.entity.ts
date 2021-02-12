@@ -43,12 +43,6 @@ export class Product extends BaseEntity<Product> {
   imageUrl: string;
 
   @ManyToOne(
-    () => User,
-    user => user.products,
-  )
-  createdBy: User;
-
-  @ManyToOne(
     () => Category,
     category => category.products,
   )

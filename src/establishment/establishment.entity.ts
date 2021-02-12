@@ -1,4 +1,6 @@
- import { Entity, Column, OneToMany } from 'typeorm';
+import { Address } from 'src/address/address.entity';
+import { Category } from 'src/category/category.entity';
+import { Entity, Column, OneToMany, OneToOne, JoinColumn, ManyToOne } from 'typeorm';
 import { BaseEntity } from '../base-entity';
 import { Product } from '../product/product.entity';
 
@@ -14,15 +16,19 @@ export class Establishment extends BaseEntity<Establishment> {
   })
   phone: string;
 
-  @Column({
-    nullable: true,
-  })
-  email: string;
-
   @OneToMany(
     () => Product,
     product => product.vendor,
   )
   products: Product[];
-}
 
+  @OneToOne(() => Address)
+  @JoinColumn()
+  address: Address;
+
+  @ManyToOne(
+    () => Category,
+    category => category.establishments,
+  )
+  category: Category;
+}

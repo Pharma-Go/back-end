@@ -18,18 +18,17 @@ export class UserService extends CrudService<User> {
     super(repo);
   }
 
-  async getByUsernameAndPassword(username: string, password: string) {
+  async getByUsernameAndPassword(email: string, password: string) {
     const user = await this.repo.findOne({
       select: [
         'id',
         'email',
-        'username',
+        'cpf',
         'password',
-        'firstName',
-        'lastName',
+        'name',
         'role',
       ],
-      where: [{ username }, { email: username }],
+      where: [{ email}],
     });
 
     return user && BCrypt.compareSync(password, user.password)
@@ -41,58 +40,8 @@ export class UserService extends CrudService<User> {
     return await this.repo.save(dto);
   }
 
-  public async getBestSeller(): Promise<User> {
-    // TODO: Fix this query
-
-    const users = await this.repo.find({
-      relations: ['madeInvoices'],
-    });
-
-    const bestSellerInd = {
-      value: 0,
-      user: null,
-    };
-
-    users.forEach((user, index) => {
-      if (user.madeInvoices) {
-        if (user.madeInvoices.length > bestSellerInd.value) {
-          bestSellerInd.value = user.madeInvoices.length;
-          bestSellerInd.user = user;
-        }
-      }
-    });
-
-    return bestSellerInd.user;
-  }
-
   public async updateUser(id: string, user: User): Promise<User> {
-    const newUser: User = {
-      ...user,
-    };
 
-    delete newUser.madeInvoices;
-    delete newUser.purchasedInvoices;
-    delete newUser.products;
-    delete newUser.id;
-
-    if (newUser.madeInvoices) {
-      if (newUser.madeInvoices.length === 0) {
-        newUser.madeInvoices = null;
-      } else {
-        newUser.madeInvoices = user.madeInvoices.map(invoice => {
-          return { id: (invoice as unknown) as string } as Invoice;
-        });
-      }
-    }
-
-    await this.repo.save({ ...newUser, id });
-    return newUser;
-  }
-
-  public async searchUsers(body: { username: string }): Promise<User[]> {
-    return await this.repo.find({
-      relations: ['madeInvoices', 'products'],
-      where: `User.username ILIKE '%${body.username}%'`,
-    });
+    return user;
   }
 }

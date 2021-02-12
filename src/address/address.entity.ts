@@ -1,6 +1,7 @@
 import { Entity, Column, OneToOne } from 'typeorm';
 import { BaseEntity } from 'src/base-entity';
 import { User } from 'src/user/user.entity';
+import { Establishment } from 'src/establishment/establishment.entity';
 
 @Entity()
 export class Address extends BaseEntity<Address> {
@@ -39,4 +40,10 @@ export class Address extends BaseEntity<Address> {
     (user: User) => user.address,
   )
   user: User;
+
+  @OneToOne(
+    () => Establishment,
+    (establishment: Establishment) => establishment.address,
+  )
+  establishment: Establishment;
 }
