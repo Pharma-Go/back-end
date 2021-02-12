@@ -2,19 +2,18 @@ import {
   Entity,
   Column,
   OneToMany,
-  ManyToMany,
-  ManyToOne,
-  OneToOne,
-  JoinColumn,
+  ManyToMany, ManyToOne,
 } from 'typeorm';
+import { BaseEntity } from '../base-entity';
 import { BCryptTransformer } from '../lib/bcrypt';
 import { Exclude } from 'class-transformer';
-import { BaseEntity } from 'src/base-entity';
-import { Address } from 'src/address/address.entity';
+import { Product } from 'src/product/product.entity';
+import { Invoice } from 'src/invoice/invoice.entity';
 
 export type Gender = 'M' | 'F';
 export enum Role {
   ADMIN = 'admin',
+  DEFAULT = 'default',
   DEFAULT = 'default',
 }
 
@@ -23,7 +22,12 @@ export class User extends BaseEntity<User> {
   @Column({
     nullable: false,
   })
-  name: string;
+  firstName: string;
+
+  @Column({
+    nullable: false,
+  })
+  lastName: string;
 
   @Column({
     enum: ['M', 'F'],
@@ -40,7 +44,7 @@ export class User extends BaseEntity<User> {
     nullable: false,
     unique: true,
   })
-  cpf: string;
+  username: string;
 
   @Exclude()
   @Column({
@@ -50,12 +54,26 @@ export class User extends BaseEntity<User> {
   password: string;
 
   @Column({
-    enum: [Role.ADMIN, Role.DEFAULT],
+    enum: [Role.ADMIN, Role.DEFAULT, Role.DEFAULT],
     default: Role.DEFAULT,
   })
   role: Role;
 
-  @OneToOne(() => Address)
-  @JoinColumn()
-  address: Address;
+  @OneToMany(
+    () => Product,
+    product => product.createdBy,
+  )
+  products: Product[];
+
+  @OneToMany(
+    () => Invoice,
+    invoice => invoice.seller,
+  )
+  madeInvoices: Invoice[];
+
+  @OneToMany(
+    () => Invoice,
+    invoice => invoice.buyer,
+  )
+  purchasedInvoices: Invoice[];
 }

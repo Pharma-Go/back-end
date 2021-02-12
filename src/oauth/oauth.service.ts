@@ -94,10 +94,10 @@ export class OAuthService
     );
   }
   getUser(
-    email: string,
+    username: string,
     password: string,
   ): Promise<OAuth2Server.User | null> {
-    return this.userService.getByEmailAndPassword(email, password);
+    return this.userService.getByUsernameAndPassword(username, password);
   }
 
   async generateAccessToken(
@@ -147,7 +147,7 @@ export class OAuthService
       accessToken: accessToken,
       accessTokenExpiresAt: new Date(payload.exp * 1000),
       client: await this.oAuthClientService.findOne(payload.aud),
-      user: await this.userService.getOne(payload.sub),
+      user: await this.userService.findOne(payload.sub),
     };
   }
 
@@ -173,7 +173,7 @@ export class OAuthService
       refreshToken: refreshToken,
       refreshTokenExpiresAt: new Date(payload.exp * 1000),
       client: await this.oAuthClientService.findOne(payload.aud),
-      user: await this.userService.getOne(payload.sub),
+      user: await this.userService.findOne(payload.sub),
     };
   }
 

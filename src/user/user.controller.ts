@@ -23,34 +23,64 @@ import { UserDto } from './user.dto';
 @ApiOAuth2(['public'])
 @OAuthActionsScope({
   'Create-Many': ['admin'],
-  'Create-One': ['admin',"default"],
-  'Update-One': ['admin',"default"],
+  'Create-One': ['admin'],
+  'Update-One': ['admin'],
   'Delete-All': ['admin'],
   'Delete-One': ['admin'],
-  'Read-All': ['admin', 'default'],
-  'Read-One': ['admin', 'default'],
+  'Read-All': ['admin', 'default', 'default'],
+  'Read-One': ['admin', 'default', 'default'],
   'Replace-One': ['admin'],
+})
+@Crud({
+  model: {
+    type: User,
+  },
+  query: {
+    join: {
+      madeInvoices: {
+        exclude: [],
+      },
+    },
+  },
+  params: {
+    id: {
+      type: 'string',
+      field: 'id',
+      primary: true,
+    },
+  },
 })
 export class UserController {
   constructor(public readonly service: UserService) {
   }
 
+  @OAuthPublic()
   @Post()
-  async createUser(@Body(new SanitizePipe(UserDto)) dto: UserDto) {
-    return await this.service.createUser(dto)
+  createUser(@Body(new SanitizePipe(UserDto)) dto: UserDto) {
+    return this.service.createUser(dto);
   }
 
   @Get('me')
   getMe(@CurrentUser() user: User) {
     return user;
   }
-  
+
+  @Get('bestSeller')
+  public async getBestSeller() {
+    return this.service.getBestSeller();
+  }
+
   @Put(':id')
   async putOne(
     @Param('id') id: string,
     @Body() user: User,
   ) {
-    return await this.service.updateUser(id,user)
+    return await this.service.updateUser(id, user);
+  }
+
+  @Post('search')
+  public async searchUsers(@Body() body: { username: string }): Promise<User[]> {
+    return await this.service.searchUsers(body);
   }
 
 }

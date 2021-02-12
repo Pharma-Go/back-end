@@ -11,11 +11,11 @@ services:
       - ./data/pgadmin:/var/lib/pgadmin4
     networks:
       - pg-network
-
+      
   pgadmin:
     image: dpage/pgadmin4
     environment:
-      PGADMIN_DEFAULT_EMAIL: "pharmago@pharmago.com.br"
+      PGADMIN_DEFAULT_EMAIL: "pharmago@pharma.go"
       PGADMIN_DEFAULT_PASSWORD: "abc"
     ports:
       - "5050:80"

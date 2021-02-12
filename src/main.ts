@@ -28,7 +28,7 @@ class App {
     //     signed: true,
     //     httpOnly: true,
     //     maxAge: 1.296e9,
-    //     name: 'invictus.sid',
+    //     name: 'pharmago.sid',
     //   }),
     // );
 
@@ -69,7 +69,7 @@ class App {
             refreshUrl: 'http://localhost:3000/oauth/token',
             scopes: {
               admin: 'Administrador',
-              default: 'Usuario',
+              default: 'Usuário',
             },
           },
         },

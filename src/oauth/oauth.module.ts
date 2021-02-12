@@ -18,7 +18,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: {
-        issuer: 'http://oauth.pharma.go',
+        issuer: 'http://oauth.pharmago.com.br',
       },
     }),
     UserModule,

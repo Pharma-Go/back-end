@@ -7,7 +7,11 @@ import { User, Gender, Role } from './user.entity';
 export class UserDto {
   @IsString({ always: true })
   @Expose()
-  name: string;
+  firstName: string;
+
+  @IsString({ always: true })
+  @Expose()
+  lastName: string;
 
   @IsIn(['M', 'F'], {
     always: true,
@@ -23,7 +27,7 @@ export class UserDto {
 
   @IsString({ always: true })
   @Expose()
-  cpf: string;
+  username: string;
 
   @IsString({ always: true })
   @Expose()
