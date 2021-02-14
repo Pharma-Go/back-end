@@ -5779,6 +5779,11 @@ packet-reader@1.0.0:
   resolved "https://registry.yarnpkg.com/packet-reader/-/packet-reader-1.0.0.tgz#9238e5480dedabacfe1fe3f2771063f164157d74"
   integrity sha512-HAKu/fG3HpHFO0AA8WE8q2g+gBJaZ9MG7fcKk+IJPLTGAD6Psw4443l+9DGRbOIh3/aXr7Phy0TjilYivJo5XQ==
 
+pagarme@^4.15.3:
+  version "4.15.3"
+  resolved "https://registry.yarnpkg.com/pagarme/-/pagarme-4.15.3.tgz#bbdd30bd5a9132f9d9788e2477136f82df3f4398"
+  integrity sha512-R6XsuJ15LF8bU19SVt87D+LVFS3CsCstpeXeJQWb3qZS/Tf+TprkUD9EqsE1a7rSe+Vk43FZHmjH9vyUE6Wl+A==
+
 pako@~1.0.5:
   version "1.0.11"
   resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.11.tgz#6c9599d340d54dfd3946380252a35705a6b992bf"

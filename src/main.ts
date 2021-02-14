@@ -3,11 +3,16 @@ import { NestApplication, NestFactory, Reflector } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { OAuth2ServerExceptionFilter } from './oauth/oauth.filter';
+const pagarme = require('pagarme');
 
-class App {
+export class App {
   public static app: NestApplication;
+  public static client: any;
 
   private static async setup() {
+    App.client = await pagarme.client.connect({
+      api_key: 'ak_test_1WvPtavuosWaKkDIEH2mW2MXqr8BQw',
+    });
     // Cria a instância
     const app = (this.app = await NestFactory.create(AppModule));
 

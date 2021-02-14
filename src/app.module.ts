@@ -1,4 +1,4 @@
-import "dotenv/config"
+import 'dotenv/config';
 
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -11,7 +11,8 @@ import { EstablishmentModule } from './establishment/establishment.module';
 import { ProductModule } from './product/product.module';
 import { CategoryModule } from './category/category.module';
 import { InvoiceModule } from './invoice/invoice.module';
-import { ScheduleModule } from "@nestjs/schedule";
+import { ScheduleModule } from '@nestjs/schedule';
+import { AddressModule } from './address/address.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ScheduleModule } from "@nestjs/schedule";
     EstablishmentModule,
     OAuthModule,
     UserModule,
+    AddressModule,
     ProductModule,
     CategoryModule,
     InvoiceModule,

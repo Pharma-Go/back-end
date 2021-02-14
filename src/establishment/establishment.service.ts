@@ -1,41 +1,44 @@
 import { Injectable } from '@nestjs/common';
 import { Establishment } from './establishment.entity';
-import { Repository } from 'typeorm';
+import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CrudService } from '../lib/crud-services/crud-services';
-import { Category } from '../category/category.entity';
-import { Product } from '../product/product.entity';
-
+import { EstablishmentDto } from './establishment.dto';
 @Injectable()
-export class EstablishmentService extends CrudService<Establishment> {
+export class EstablishmentService {
   constructor(
     @InjectRepository(Establishment)
-      repo: Repository<Establishment>,
-  ) {
-    super(repo);
-  }
+    private repo: Repository<Establishment>,
+  ) {}
 
-  public async createVendor(body: Establishment): Promise<Establishment> {
-    return await this.repo.save(body);
-  }
+  public async createEstablishment(
+    dto: EstablishmentDto,
+  ): Promise<Establishment> {
+    const establishment = await this.repo.save(
+      (dto as unknown) as Establishment,
+    );
 
-  public async updateVendor(id: string, vendor: Establishment): Promise<Category> {
-    const newVendor: Establishment = {
-      ...vendor,
-    };
-
-    delete newVendor.products;
-
-    newVendor.products = vendor.products.map((product) => {
-      return { id: product as unknown as string } as Product;
+    return this.getOne(establishment.id, {
+      relations: ['address', 'products', 'categories'],
     });
+  }
+  public async updateEstablishment(
+    id: string,
+    user: DeepPartial<Establishment>,
+  ): Promise<Establishment> {
+    await this.repo.update(id, user);
+    return this.getOne(id, {
+      relations: ['address', 'categories', 'products'],
+    });
+  }
 
+  public async getOne(
+    id: string,
+    options?: FindOneOptions,
+  ): Promise<Establishment> {
+    return this.repo.findOne(id, options);
+  }
 
-    if (newVendor.products.length === 0) {
-      newVendor.products = null;
-    }
-
-    await this.repo.save({ ...newVendor, id });
-    return newVendor;
+  public async getAll(): Promise<Establishment[]> {
+    return this.repo.find({ relations: ['address', 'categories', 'products'] });
   }
 }

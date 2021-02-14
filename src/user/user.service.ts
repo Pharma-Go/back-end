@@ -1,34 +1,27 @@
 import { Injectable } from '@nestjs/common';
-import { Role, User } from './user.entity';
-import { Equal, Like, Repository } from 'typeorm';
+import { User } from './user.entity';
+import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as BCrypt from 'bcrypt';
 import { classToPlain } from 'class-transformer';
-import { CrudService } from '../lib/crud-services/crud-services';
 import { UserDto } from './user.dto';
-import { Product } from '../product/product.entity';
-import { Invoice } from '../invoice/invoice.entity';
+import { AddressService } from 'src/address/address.service';
+import { AddressDto } from 'src/address/address.dto';
+import { CardDto } from 'src/card/card.dto';
+import { App } from 'src/main';
 
 @Injectable()
-export class UserService extends CrudService<User> {
+export class UserService {
   constructor(
     @InjectRepository(User)
-    repo: Repository<User>,
-  ) {
-    super(repo);
-  }
+    private repo: Repository<User>,
+    private addressService: AddressService,
+  ) {}
 
   async getByUsernameAndPassword(email: string, password: string) {
     const user = await this.repo.findOne({
-      select: [
-        'id',
-        'email',
-        'cpf',
-        'password',
-        'name',
-        'role',
-      ],
-      where: [{ email}],
+      select: ['id', 'email', 'cpf', 'password', 'name', 'role'],
+      where: [{ email }],
     });
 
     return user && BCrypt.compareSync(password, user.password)
@@ -36,12 +29,44 @@ export class UserService extends CrudService<User> {
       : null;
   }
 
-  async createUser(dto: UserDto) {
-    return await this.repo.save(dto);
+  public async createUser(dto: UserDto): Promise<User> {
+    if (dto.address) {
+      const address = await this.addressService.createOne(dto.address);
+      dto.address = (address.id as unknown) as AddressDto;
+    }
+
+    const user = await this.repo.save(dto);
+
+    return this.getOne(user.id);
   }
 
-  public async updateUser(id: string, user: User): Promise<User> {
-
-    return user;
+  public async getMe(user: User): Promise<User> {
+    return this.repo.findOne(user.id);
   }
+
+  public async updateUser(id: string, user: DeepPartial<User>): Promise<User> {
+    await this.repo.update(id, user);
+    return this.getOne(id);
+  }
+
+  public async getOne(id: string, options?: FindOneOptions): Promise<User> {
+    if (!options) {
+      options = {
+        relations: ['address', 'cards'],
+      };
+    }
+
+    return this.repo.findOne(id, options);
+  }
+
+  public async getAll(): Promise<User[]> {
+    return this.repo.find({ relations: ['address'] });
+  }
+
+  // public async createCard(card: CardDto, user: User): Promise<void> {
+  //   const idCard = (await App.client.cards.create(card)).id;
+  //   user.cards.push(idCard);
+
+  //   return;
+  // }
 }

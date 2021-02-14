@@ -1,11 +1,19 @@
-import { Entity, Column, OneToOne, JoinColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  OneToOne,
+  JoinColumn,
+  OneToMany,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
 import { BCryptTransformer } from '../lib/bcrypt';
 import { Exclude } from 'class-transformer';
 import { BaseEntity } from 'src/base-entity';
 import { Address } from 'src/address/address.entity';
 import { Invoice } from 'src/invoice/invoice.entity';
 
-export type Gender = 'M' | 'F';
+export type Gender = 'M' | 'F' | 'X';
 export enum Role {
   ADMIN = 'admin',
   DEFAULT = 'default',
@@ -19,7 +27,7 @@ export class User extends BaseEntity<User> {
   name: string;
 
   @Column({
-    enum: ['M', 'F'],
+    enum: ['M', 'F', 'X'],
   })
   gender: Gender;
 
@@ -60,11 +68,9 @@ export class User extends BaseEntity<User> {
   @OneToMany(
     () => Invoice,
     invoice => invoice.buyer,
-    {
-      cascade: true,
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE',
-    },
   )
   invoices: Invoice[];
+
+  @Column('simple-array', { nullable: false })
+  cards: string[];
 }

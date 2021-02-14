@@ -22,12 +22,9 @@ export class Category extends BaseEntity<Category> {
   )
   products: Product[];
 
-  @OneToMany(
+  @ManyToMany(
     () => Establishment,
-    establishment => establishment.category,
-    {
-      cascade: true,
-    },
+    establishment => establishment.categories,
   )
   establishments: Establishment[];
 }
