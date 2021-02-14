@@ -39,27 +39,19 @@ import { Product } from '../product/product.entity';
   },
 })
 export class VendorController {
-  constructor(
-    public readonly service: EstablishmentService,
-  ) {
-  }
+  constructor(public readonly service: EstablishmentService) {}
 
+  // @Post('')
+  // public async createCategory(@Body() body: Establishment): Promise<Category> {
+  //   body.products = body.products.map((product) => {
+  //     return { id: product as unknown as string } as Product;
+  //   });
 
-  @Post('')
-  public async createCategory(@Body() body: Establishment): Promise<Category> {
-    body.products = body.products.map((product) => {
-      return { id: product as unknown as string } as Product;
-    });
+  //   // return this.service.createVendor(body);
+  // }
 
-    return this.service.createVendor(body);
-  }
-
-  @Put(':id')
-  async putOne(
-    @Param('id') id: string,
-    @Body() vendor: Establishment,
-  ) {
-    return await this.service.updateVendor(id, vendor);
-  }
-
+  // @Put(':id')
+  // async putOne(@Param('id') id: string, @Body() vendor: Establishment) {
+  //   return await this.service.updateVendor(id, vendor);
+  // }
 }

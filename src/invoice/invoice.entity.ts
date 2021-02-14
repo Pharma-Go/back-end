@@ -16,10 +16,6 @@ export class Invoice extends BaseEntity<Invoice> {
   })
   discount: number;
 
-  @Column({
-    nullable: false,
-  })
-  title: string;
 
   @JoinTable()
   @ManyToMany(
@@ -34,7 +30,6 @@ export class Invoice extends BaseEntity<Invoice> {
   @ManyToOne(
     () => User,
     user => user.invoices,
-    { cascade: true },
   )
   buyer: User;
 }

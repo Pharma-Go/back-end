@@ -33,11 +33,6 @@ export class Product extends BaseEntity<Product> {
   quantity: number;
 
   @Column({
-    nullable: false,
-  })
-  dimension: string;
-
-  @Column({
     nullable: true,
   })
   imageUrl: string;

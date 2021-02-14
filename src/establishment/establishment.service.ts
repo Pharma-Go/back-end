@@ -19,23 +19,23 @@ export class EstablishmentService extends CrudService<Establishment> {
     return await this.repo.save(body);
   }
 
-  public async updateVendor(id: string, vendor: Establishment): Promise<Category> {
-    const newVendor: Establishment = {
-      ...vendor,
-    };
+  // public async updateVendor(id: string, vendor: Establishment): Promise<Category> {
+  //   const newVendor: Establishment = {
+  //     ...vendor,
+  //   };
 
-    delete newVendor.products;
+  //   delete newVendor.products;
 
-    newVendor.products = vendor.products.map((product) => {
-      return { id: product as unknown as string } as Product;
-    });
+  //   newVendor.products = vendor.products.map((product) => {
+  //     return { id: product as unknown as string } as Product;
+  //   });
 
 
-    if (newVendor.products.length === 0) {
-      newVendor.products = null;
-    }
+  //   if (newVendor.products.length === 0) {
+  //     newVendor.products = null;
+  //   }
 
-    await this.repo.save({ ...newVendor, id });
-    return newVendor;
-  }
+  //   await this.repo.save({ ...newVendor, id });
+  //   return newVendor;
+  // }
 }
