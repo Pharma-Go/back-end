@@ -52,7 +52,7 @@ export class UserService {
   public async getOne(id: string, options?: FindOneOptions): Promise<User> {
     if (!options) {
       options = {
-        relations: ['address', 'cards'],
+        relations: ['address'],
       };
     }
 
