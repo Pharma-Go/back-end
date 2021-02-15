@@ -38,14 +38,4 @@ export class Establishment extends BaseEntity<Establishment> {
   @OneToOne(() => Address)
   @JoinColumn()
   address: Address;
-
-  @JoinTable()
-  @ManyToMany(
-    () => Category,
-    category => category.establishments,
-    {
-      cascade: true,
-    },
-  )
-  categories: Establishment[];
 }

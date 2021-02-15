@@ -26,6 +26,11 @@ export class ProductController {
     return this.service.getAll();
   }
 
+  @Get(':establishment/highlights')
+  public getHighlights(@Param('establishment') establishmentId: string) {
+    return this.service.getHighlights(establishmentId);
+  }
+
   @Post()
   async createOne(@Body(new SanitizePipe(ProductDto)) dto: ProductDto) {
     dto.originalPrice = dto.price;

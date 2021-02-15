@@ -1,9 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Category } from 'src/category/category.entity';
-import { CategoryService } from 'src/category/category.service';
-import { EstablishmentDto } from 'src/establishment/establishment.dto';
-import { EstablishmentService } from 'src/establishment/establishment.service';
 import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
 import { ProductDto } from './product.dto';
 import { Product } from './product.entity';
@@ -34,6 +30,7 @@ export class ProductService {
       relations: ['establishment', 'category'],
     });
   }
+
   public async updateProduct(
     id: string,
     user: DeepPartial<Product>,
@@ -50,5 +47,36 @@ export class ProductService {
 
   public async getAll(): Promise<Product[]> {
     return this.repo.find({ relations: ['establishment', 'category'] });
+  }
+
+  public async getHighlights(establishmentId: string): Promise<Product[]> {
+    const products = await this.repo.find({
+      relations: ['invoices'],
+      where: {
+        establishment: establishmentId,
+      },
+    });
+
+    const groupedBestProducts = products.reduce((acc, product) => {
+      if (!acc.has(product.invoices.length)) {
+        acc.set(product.invoices.length, []);
+      }
+
+      const productsMap = acc.get(product.invoices.length);
+      productsMap.push(product);
+
+      acc.set(product.invoices.length, productsMap);
+      return acc;
+    }, new Map<Number, Product[]>());
+
+    let higherKey = 0;
+
+    groupedBestProducts.forEach((_, key) => {
+      if (key > higherKey) {
+        higherKey = Number(key);
+      }
+    });
+
+    return groupedBestProducts.get(higherKey);
   }
 }

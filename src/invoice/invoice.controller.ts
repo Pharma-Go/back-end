@@ -30,17 +30,17 @@ export class InvoiceController {
     @Body(new SanitizePipe(InvoiceDto)) dto: InvoiceDto,
     @CurrentUser() user: User,
   ) {
-    return this.service.createInvoice(dto, user, '');
-  }
-
-  @Post('pagarme')
-  public testPagarme() {
-    return this.service.testPagarme();
+    return this.service.createInvoice(dto, user);
   }
 
   @Get()
   public getAll() {
     return this.service.getAll();
+  }
+
+  @Get('recents')
+  public getRecentsInvoices(@CurrentUser() user: User) {
+    return this.service.getRecentsInvoices(user);
   }
 
   @Get(':id')

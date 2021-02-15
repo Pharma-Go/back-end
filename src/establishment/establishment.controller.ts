@@ -4,7 +4,7 @@ import { Establishment } from './establishment.entity';
 import { OAuthActionsScope } from '../lib/decorators/oauth.decorator';
 import { ApiOAuth2, ApiTags } from '@nestjs/swagger';
 import { SanitizePipe } from 'src/lib/pipes/sanitize.pipe';
-import { EstablishmentDto } from './establishment.dto';
+import { EstablishmentDto } from './dto/establishment.dto';
 
 @ApiTags('Establishment')
 @Controller('establishment')
@@ -37,12 +37,17 @@ export class EstablishmentController {
   @Get(':id')
   public getOne(@Param('id') id: string) {
     return this.service.getOne(id, {
-      relations: ['address', 'categories', 'products'],
+      relations: ['address', 'products'],
     });
   }
 
   @Put(':id')
   public putOne(@Param('id') id: string, @Body() user: Establishment) {
     return this.service.updateEstablishment(id, user);
+  }
+
+  @Get('search/:term')
+  public searchEstablishment(@Param('term') term: string) {
+    return this.service.searchEstablishment(term);
   }
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Establishment } from './establishment.entity';
 import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EstablishmentDto } from './establishment.dto';
+import { EstablishmentDto } from './dto/establishment.dto';
 @Injectable()
 export class EstablishmentService {
   constructor(
@@ -18,7 +18,7 @@ export class EstablishmentService {
     );
 
     return this.getOne(establishment.id, {
-      relations: ['address', 'products', 'categories'],
+      relations: ['address', 'categories'],
     });
   }
   public async updateEstablishment(
@@ -27,7 +27,7 @@ export class EstablishmentService {
   ): Promise<Establishment> {
     await this.repo.update(id, user);
     return this.getOne(id, {
-      relations: ['address', 'categories', 'products'],
+      relations: ['address', 'products'],
     });
   }
 
@@ -39,6 +39,13 @@ export class EstablishmentService {
   }
 
   public async getAll(): Promise<Establishment[]> {
-    return this.repo.find({ relations: ['address', 'categories', 'products'] });
+    return this.repo.find({ relations: ['address', 'products'] });
+  }
+
+  public searchEstablishment(term: string): Promise<Establishment[]> {
+    return this.repo.find({
+      relations: ['products', 'address'],
+      where: `Establishment.name ILIKE '%${term}%'`,
+    });
   }
 }

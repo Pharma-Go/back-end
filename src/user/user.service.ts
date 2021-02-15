@@ -6,10 +6,6 @@ import * as BCrypt from 'bcrypt';
 import { classToPlain } from 'class-transformer';
 import { UserDto } from './user.dto';
 import { AddressService } from 'src/address/address.service';
-import { AddressDto } from 'src/address/address.dto';
-import { CardDto } from 'src/card/card.dto';
-import { App } from 'src/main';
-
 @Injectable()
 export class UserService {
   constructor(
@@ -30,12 +26,7 @@ export class UserService {
   }
 
   public async createUser(dto: UserDto): Promise<User> {
-    if (dto.address) {
-      const address = await this.addressService.createOne(dto.address);
-      dto.address = (address.id as unknown) as AddressDto;
-    }
-
-    const user = await this.repo.save(dto);
+    const user = await this.repo.save({ ...dto, cards: [] });
 
     return this.getOne(user.id);
   }
@@ -52,7 +43,7 @@ export class UserService {
   public async getOne(id: string, options?: FindOneOptions): Promise<User> {
     if (!options) {
       options = {
-        relations: ['address'],
+        relations: ['address', 'cards'],
       };
     }
 
@@ -60,13 +51,6 @@ export class UserService {
   }
 
   public async getAll(): Promise<User[]> {
-    return this.repo.find({ relations: ['address'] });
+    return this.repo.find({ relations: ['address', 'cards'] });
   }
-
-  // public async createCard(card: CardDto, user: User): Promise<void> {
-  //   const idCard = (await App.client.cards.create(card)).id;
-  //   user.cards.push(idCard);
-
-  //   return;
-  // }
 }

@@ -22,6 +22,14 @@ export class AddressDto {
   @Expose()
   city: string;
 
+  @IsString({ always: true })
+  @Expose()
+  state: string;
+
+  @IsString({ always: true })
+  @Expose()
+  zipcode: string;
+
   @IsString()
   @Expose()
   reference: string;

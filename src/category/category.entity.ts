@@ -21,10 +21,4 @@ export class Category extends BaseEntity<Category> {
     },
   )
   products: Product[];
-
-  @ManyToMany(
-    () => Establishment,
-    establishment => establishment.categories,
-  )
-  establishments: Establishment[];
 }

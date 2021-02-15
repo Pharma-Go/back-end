@@ -6,10 +6,11 @@ import {
   OAuthActionsScope,
   CurrentUser,
 } from '../lib/decorators/oauth.decorator';
-import { ApiTags, ApiOAuth2 } from '@nestjs/swagger';
+import { ApiTags, ApiOAuth2, ApiCreatedResponse } from '@nestjs/swagger';
 import { SanitizePipe } from '../lib/pipes/sanitize.pipe';
 import { UserDto } from './user.dto';
 import { CardDto } from 'src/card/card.dto';
+import { PagarmeCard } from 'src/card/card.model';
 
 @ApiTags('Users')
 @Controller('users')
@@ -52,12 +53,4 @@ export class UserController {
   public putOne(@Param('id') id: string, @Body() user: User) {
     return this.service.updateUser(id, user);
   }
-
-  // @Post('card')
-  // public createCard(
-  //   @Body(new SanitizePipe(CardDto)) card: CardDto,
-  //   @CurrentUser() user: User,
-  // ) {
-  //   return this.service.createCard(card, user);
-  // }
 }

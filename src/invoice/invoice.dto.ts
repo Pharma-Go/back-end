@@ -1,5 +1,5 @@
 import { Expose } from 'class-transformer';
-import { IsEnum, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsEnum, IsNumber, IsString } from 'class-validator';
 import { PaymentMethod } from './invoice.entity';
 
 export class InvoiceDto {
@@ -7,13 +7,19 @@ export class InvoiceDto {
   @Expose()
   discount: number;
 
-  @IsEnum(PaymentMethod)
-  @Expose()
-  paymentMethod: PaymentMethod;
-
+  @IsArray()
   @Expose()
   products: string[];
 
+  @IsString()
   @Expose()
   buyer: string;
+
+  @IsString()
+  @Expose()
+  cardId: string;
+
+  @IsEnum(PaymentMethod)
+  @Expose()
+  paymentMethod: PaymentMethod
 }

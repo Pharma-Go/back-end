@@ -9,9 +9,9 @@ export enum PaymentMethod {
 }
 
 export enum PaymentStatus {
-  PAID = 'PAID',
-  REFUSED = 'REFUSED',
-  PENDING = 'PENDING',
+  paid = 'paid',
+  refused = 'refused',
+  pending = 'pending',
 }
 
 @Entity()
@@ -30,7 +30,7 @@ export class Invoice extends BaseEntity<Invoice> {
   @Column({
     nullable: true,
     enum: ['PENDING', 'REFUSED', 'PAID'],
-    default: PaymentStatus.PENDING,
+    default: PaymentStatus.pending,
   })
   paymentStatus: PaymentStatus;
 
@@ -39,6 +39,11 @@ export class Invoice extends BaseEntity<Invoice> {
     enum: ['CREDIT_CARD', 'DEBIT_CARD'],
   })
   paymentMethod: PaymentMethod;
+
+  @Column({
+    nullable: true,
+  })
+  paymentDate: Date;
 
   @ManyToMany(
     () => Product,

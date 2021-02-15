@@ -13,6 +13,8 @@ import { CategoryModule } from './category/category.module';
 import { InvoiceModule } from './invoice/invoice.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AddressModule } from './address/address.module';
+import { CardController } from './card/card.controller';
+import { CardModule } from './card/card.module';
 
 @Module({
   imports: [
@@ -26,8 +28,9 @@ import { AddressModule } from './address/address.module';
     ProductModule,
     CategoryModule,
     InvoiceModule,
+    CardModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, CardController],
   providers: [AppService],
 })
 export class AppModule {}

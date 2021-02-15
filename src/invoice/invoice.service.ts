@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
-import { Invoice } from './invoice.entity';
+import { Invoice, PaymentStatus } from './invoice.entity';
 import { InvoiceDto } from './invoice.dto';
 import { ProductService } from 'src/product/product.service';
 import { User } from 'src/user/user.entity';
@@ -15,19 +15,16 @@ export class InvoiceService {
     private productService: ProductService,
   ) {}
 
-  public async testPagarme() {
-    // const transaction = await client.transactions.create({});
-    // console.log(transaction);
-  }
-
-  public async createInvoice(
-    invoiceDto: InvoiceDto,
-    user: User,
-    cardId: string,
-  ) {
+  public async createInvoice(invoiceDto: InvoiceDto, user: User) {
     if (!invoiceDto.products || invoiceDto.products?.length === 0) {
       throw new BadRequestException(
         'Não é possível criar uma venda sem produtos.',
+      );
+    }
+
+    if (!user.address) {
+      throw new BadRequestException(
+        'Não é possível criar uma venda sem que o usuário tenha um endereço de entrega.',
       );
     }
 
@@ -56,7 +53,7 @@ export class InvoiceService {
       const transaction = await App.client.transactions
         .create({
           amount: newInvoice.total,
-          card_id: cardId,
+          card_id: invoiceDto.cardId,
           customer: {
             external_id: user.id,
             name: user.name,
@@ -71,6 +68,9 @@ export class InvoiceService {
             ],
             phone_numbers: [`+55${user.phone}`],
           },
+          capture: true,
+          async: false,
+          payment_method: 'credit_card',
           billing: {
             name: 'Local de entrega',
             address: {
@@ -85,9 +85,15 @@ export class InvoiceService {
           },
           items: this.transformProductsToPagarmeItem(invoice.products),
         })
-        .catch(err => console.log('erro', err.response));
+        .catch((err: any) => {
+          throw new BadRequestException(err.response.errors[0].message);
+        });
 
-      console.log(transaction);
+      if (transaction.status === PaymentStatus.paid) {
+        invoice.paymentStatus = transaction.status;
+        invoice.paymentDate = new Date();
+        this.repo.update(invoice.id, invoice);
+      }
     }
 
     return invoice;
@@ -137,8 +143,18 @@ export class InvoiceService {
   // }
 
   public async getInvoice(id: string): Promise<Invoice> {
-    return await this.repo.findOne(id, {
-      relations: ['products', 'installments', 'seller', 'buyer'],
+    return this.repo.findOne(id, {
+      relations: ['products', 'buyer'],
+    });
+  }
+
+  public async getRecentsInvoices(user: User): Promise<Invoice[]> {
+    return this.repo.find({
+      relations: ['products', 'buyer'],
+      where: { buyer: user.id, paymentStatus: PaymentStatus.paid },
+      order: {
+        paymentDate: 'DESC',
+      },
     });
   }
 }

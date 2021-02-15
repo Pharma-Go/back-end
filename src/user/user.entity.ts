@@ -12,6 +12,7 @@ import { Exclude } from 'class-transformer';
 import { BaseEntity } from 'src/base-entity';
 import { Address } from 'src/address/address.entity';
 import { Invoice } from 'src/invoice/invoice.entity';
+import { Card } from 'src/card/card.entity';
 
 export type Gender = 'M' | 'F' | 'X';
 export enum Role {
@@ -71,6 +72,9 @@ export class User extends BaseEntity<User> {
   )
   invoices: Invoice[];
 
-  @Column('simple-array', { nullable: false })
-  cards: string[];
+  @OneToMany(
+    () => Card,
+    card => card.user,
+  )
+  cards: Card[];
 }

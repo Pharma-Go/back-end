@@ -36,7 +36,4 @@ export class UserDto {
   @IsEnum(Role)
   @Expose()
   role: Role;
-
-  @Expose()
-  address: AddressDto
 }
