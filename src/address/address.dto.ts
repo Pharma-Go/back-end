@@ -1,31 +1,28 @@
 import { Expose } from 'class-transformer';
 import { IsNumber, IsString } from 'class-validator';
 
-export class ProductDto {
+export class AddressDto {
   @IsString({ always: true })
   @Expose()
-  name: string;
+  street: string;
 
   @IsString({ always: true })
   @Expose()
-  description: string;
+  district: string;
 
   @IsNumber()
   @Expose()
-  price: number;
+  streetNumber: number;
 
+  @IsString({ always: true })
   @Expose()
-  originalPrice: number;
+  complement: string;
 
-  @IsNumber()
+  @IsString({ always: true })
   @Expose()
-  quantity: number;
+  city: string;
 
-  imageUrl?: string;
-
+  @IsString()
   @Expose()
-  category: string;
-
-  @Expose()
-  establishment: string;
+  reference: string;
 }

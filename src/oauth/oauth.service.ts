@@ -147,7 +147,7 @@ export class OAuthService
       accessToken: accessToken,
       accessTokenExpiresAt: new Date(payload.exp * 1000),
       client: await this.oAuthClientService.findOne(payload.aud),
-      user: await this.userService.findOne(payload.sub),
+      user: await this.userService.getOne(payload.sub),
     };
   }
 
@@ -173,7 +173,7 @@ export class OAuthService
       refreshToken: refreshToken,
       refreshTokenExpiresAt: new Date(payload.exp * 1000),
       client: await this.oAuthClientService.findOne(payload.aud),
-      user: await this.userService.findOne(payload.sub),
+      user: await this.userService.getOne(payload.sub),
     };
   }
 

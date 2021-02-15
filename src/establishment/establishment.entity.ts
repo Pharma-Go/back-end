@@ -1,6 +1,14 @@
 import { Address } from 'src/address/address.entity';
 import { Category } from 'src/category/category.entity';
-import { Entity, Column, OneToMany, OneToOne, JoinColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  OneToMany,
+  OneToOne,
+  JoinColumn,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
 import { BaseEntity } from '../base-entity';
 import { Product } from '../product/product.entity';
 
@@ -16,9 +24,14 @@ export class Establishment extends BaseEntity<Establishment> {
   })
   phone: string;
 
+  @Column({
+    nullable: true,
+  })
+  imageUrl: string;
+
   @OneToMany(
     () => Product,
-    product => product.vendor,
+    product => product.establishment,
   )
   products: Product[];
 
@@ -26,9 +39,13 @@ export class Establishment extends BaseEntity<Establishment> {
   @JoinColumn()
   address: Address;
 
-  @ManyToOne(
+  @JoinTable()
+  @ManyToMany(
     () => Category,
     category => category.establishments,
+    {
+      cascade: true,
+    },
   )
-  category: Category;
+  categories: Establishment[];
 }

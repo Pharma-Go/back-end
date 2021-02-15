@@ -45,9 +45,9 @@ export class Product extends BaseEntity<Product> {
 
   @ManyToOne(
     () => Establishment,
-    vendor => vendor.products,
+    establishment => establishment.products,
   )
-  vendor: Establishment;
+  establishment: Establishment;
 
   @ManyToMany(
     () => Invoice,

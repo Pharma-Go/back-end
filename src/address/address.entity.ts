@@ -33,6 +33,16 @@ export class Address extends BaseEntity<Address> {
   @Column({
     nullable: false,
   })
+  state: string;
+
+  @Column({
+    nullable: false,
+  })
+  zipcode: string;
+
+  @Column({
+    nullable: true,
+  })
   reference: string;
 
   @OneToOne(
