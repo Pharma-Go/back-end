@@ -11,6 +11,7 @@ import {
   JoinTable,
 } from 'typeorm';
 import { BaseEntity } from '../base-entity';
+import { Review } from 'src/review/review.entity';
 
 @Entity()
 export class Product extends BaseEntity<Product> {
@@ -61,4 +62,10 @@ export class Product extends BaseEntity<Product> {
     invoice => invoice.products,
   )
   invoices: Invoice[];
+
+  @OneToMany(
+    () => Review,
+    review => review.product,
+  )
+  reviews: Review[];
 }

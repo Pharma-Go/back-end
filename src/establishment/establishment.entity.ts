@@ -1,5 +1,6 @@
 import { Address } from 'src/address/address.entity';
 import { Category } from 'src/category/category.entity';
+import { Review } from 'src/review/review.entity';
 import {
   Entity,
   Column,
@@ -38,4 +39,10 @@ export class Establishment extends BaseEntity<Establishment> {
   @OneToOne(() => Address)
   @JoinColumn()
   address: Address;
+
+  @OneToMany(
+    () => Review,
+    review => review.establishment,
+  )
+  reviews: Review[];
 }

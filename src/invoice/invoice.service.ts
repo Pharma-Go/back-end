@@ -33,6 +33,13 @@ export class InvoiceService {
 
     for (let productId of invoiceDto.products) {
       const product = await this.productService.getOne(productId);
+
+      if (product.quantity === 0) {
+        throw new BadRequestException(
+          'Não é possível adicionar um produto que não tenha em estoque',
+        );
+      }
+
       newInvoice.total += product.price;
     }
 
@@ -124,10 +131,6 @@ export class InvoiceService {
   public async getAll(): Promise<Invoice[]> {
     return this.repo.find({ relations: ['products', 'buyer'] });
   }
-  // throw new BadRequestException(
-  //   'Não foi possível verificar a quantidade disponível do produto ' +
-  //     (await this.productService.getOneProduct(product.id)).name,
-  // );
 
   // public async search(body: { from: Date; until: Date }) {
   //   return await this.repo.find({

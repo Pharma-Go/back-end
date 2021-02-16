@@ -15,12 +15,14 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { AddressModule } from './address/address.module';
 import { CardController } from './card/card.controller';
 import { CardModule } from './card/card.module';
+import { ReviewModule } from './review/review.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot(),
     ScheduleModule.forRoot(),
+    ReviewModule,
     EstablishmentModule,
     OAuthModule,
     UserModule,
