@@ -9,7 +9,7 @@ export class InvoiceDto {
 
   @IsArray()
   @Expose()
-  products: string[];
+  products: { id: string; quantity: number }[];
 
   @IsString()
   @Expose()
@@ -21,5 +21,5 @@ export class InvoiceDto {
 
   @IsEnum(PaymentMethod)
   @Expose()
-  paymentMethod: PaymentMethod
+  paymentMethod: PaymentMethod;
 }

@@ -1,5 +1,5 @@
 import { Expose } from 'class-transformer';
-import { IsNumber, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsString } from 'class-validator';
 
 export class ProductDto {
   @IsString({ always: true })
@@ -17,9 +17,9 @@ export class ProductDto {
   @Expose()
   originalPrice: number;
 
-  @IsNumber()
+  @IsBoolean()
   @Expose()
-  quantity: number;
+  available: boolean;
 
   imageUrl?: string;
 

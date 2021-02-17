@@ -38,7 +38,7 @@ export class Product extends BaseEntity<Product> {
   @Column({
     nullable: false,
   })
-  quantity: number;
+  available: boolean;
 
   @Column({
     nullable: true,

@@ -18,7 +18,7 @@ export class EstablishmentService {
     );
 
     return this.getOne(establishment.id, {
-      relations: ['address', 'categories'],
+      relations: ['address'],
     });
   }
   public async updateEstablishment(
@@ -39,7 +39,7 @@ export class EstablishmentService {
   }
 
   public async getAll(): Promise<Establishment[]> {
-    return this.repo.find({ relations: ['address', 'products'] });
+    return this.repo.find({ relations: ['products'] });
   }
 
   public searchEstablishment(term: string): Promise<Establishment[]> {

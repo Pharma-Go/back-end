@@ -16,6 +16,7 @@ import { AddressModule } from './address/address.module';
 import { CardController } from './card/card.controller';
 import { CardModule } from './card/card.module';
 import { ReviewModule } from './review/review.module';
+import { CouponModule } from './coupon/coupon.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { ReviewModule } from './review/review.module';
     CategoryModule,
     InvoiceModule,
     CardModule,
+    CouponModule,
   ],
   controllers: [AppController, CardController],
   providers: [AppService],

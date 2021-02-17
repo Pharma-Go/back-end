@@ -31,14 +31,8 @@ export class InvoiceService {
     const newInvoice: Invoice = (invoiceDto as unknown) as Invoice;
     newInvoice.total = 0;
 
-    for (let productId of invoiceDto.products) {
-      const product = await this.productService.getOne(productId);
-
-      if (product.quantity === 0) {
-        throw new BadRequestException(
-          'Não é possível adicionar um produto que não tenha em estoque',
-        );
-      }
+    for (let productDto of invoiceDto.products) {
+      const product = await this.productService.getOne(productDto.id);
 
       newInvoice.total += product.price;
     }
@@ -90,11 +84,23 @@ export class InvoiceService {
               country: 'br',
             },
           },
-          items: this.transformProductsToPagarmeItem(invoice.products),
+          items: this.transformProductsToPagarmeItem(
+            invoice.products.map(product => ({
+              product,
+              quantity: invoiceDto.products.find(
+                productDto => productDto.id === product.id,
+              ).quantity,
+            })),
+          ),
         })
         .catch((err: any) => {
           throw new BadRequestException(err.response.errors[0].message);
         });
+
+      await this.repo
+        .createQueryBuilder()
+        .relation('products')
+        .add(invoice.products);
 
       if (transaction.status === PaymentStatus.paid) {
         invoice.paymentStatus = transaction.status;
@@ -106,12 +112,14 @@ export class InvoiceService {
     return invoice;
   }
 
-  public transformProductsToPagarmeItem(products: Product[]): any[] {
-    return products.map(product => ({
-      id: product.id,
-      title: product.name,
-      unit_price: product.price,
-      quantity: product.quantity,
+  public transformProductsToPagarmeItem(
+    values: { product: Product; quantity: number }[],
+  ): any[] {
+    return values.map(value => ({
+      id: value.product.id,
+      title: value.product.name,
+      unit_price: value.product.price,
+      quantity: value.quantity,
       tangible: true,
     }));
   }

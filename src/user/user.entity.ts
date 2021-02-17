@@ -15,7 +15,6 @@ import { Invoice } from 'src/invoice/invoice.entity';
 import { Card } from 'src/card/card.entity';
 import { Review } from 'src/review/review.entity';
 
-export type Gender = 'M' | 'F' | 'X';
 export enum Role {
   ADMIN = 'admin',
   DEFAULT = 'default',
@@ -27,11 +26,6 @@ export class User extends BaseEntity<User> {
     nullable: false,
   })
   name: string;
-
-  @Column({
-    enum: ['M', 'F', 'X'],
-  })
-  gender: Gender;
 
   @Column({
     nullable: false,

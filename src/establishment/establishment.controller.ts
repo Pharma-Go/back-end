@@ -11,7 +11,7 @@ import { EstablishmentDto } from './dto/establishment.dto';
 @ApiOAuth2(['public'])
 @OAuthActionsScope({
   'Create-Many': ['admin'],
-  'Create-One': ['admin', 'default'],
+  'Create-One': ['admin'],
   'Update-One': ['admin', 'default'],
   'Delete-All': ['admin'],
   'Delete-One': ['admin', 'default'],

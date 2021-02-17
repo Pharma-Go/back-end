@@ -18,7 +18,4 @@ export class EstablishmentDto {
 
   @Expose()
   public address?: string;
-
-  @Expose()
-  public categories?: string[];
 }
