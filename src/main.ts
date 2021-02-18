@@ -14,7 +14,9 @@ export class App {
       api_key: 'ak_test_1WvPtavuosWaKkDIEH2mW2MXqr8BQw',
     });
     // Cria a instância
-    const app = (this.app = await NestFactory.create(AppModule));
+    const app = (this.app = await NestFactory.create(AppModule, {
+      cors: true,
+    }));
 
     // Pipes
     app.useGlobalPipes(

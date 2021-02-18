@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { User } from './user.entity';
 import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -26,6 +26,14 @@ export class UserService {
   }
 
   public async createUser(dto: UserDto): Promise<User> {
+    if (!dto.cpf) {
+      throw new BadRequestException('CPF é obrigatório');
+    }
+
+    if (await this.repo.findOne({ where: { cpf: dto.cpf } })) {
+      throw new BadRequestException('Este cpf já está cadastrado.');
+    }
+
     const user = await this.repo.save({ ...dto, cards: [] });
 
     return this.getOne(user.id);

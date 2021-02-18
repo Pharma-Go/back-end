@@ -52,7 +52,7 @@ export class User extends BaseEntity<User> {
   })
   role: Role;
 
-  @OneToOne(() => Address)
+  @OneToOne(() => Address, { cascade: true })
   @JoinColumn()
   address: Address;
 
