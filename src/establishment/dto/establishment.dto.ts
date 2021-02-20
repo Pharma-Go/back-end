@@ -10,6 +10,14 @@ export class EstablishmentDto {
   @Expose()
   public phone: string;
 
+  @IsString({ always: true })
+  @Expose()
+  public opensAt: string;
+
+  @IsString({ always: true })
+  @Expose()
+  public closesAt: string;
+
   @Expose()
   public imageUrl?: string;
 

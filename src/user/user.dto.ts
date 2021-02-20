@@ -7,6 +7,9 @@ export class UserDto {
   @Expose()
   name: string;
 
+  @Expose()
+  imageUrl: string;
+
   @IsEmail()
   @IsString({ always: true })
   @Expose()

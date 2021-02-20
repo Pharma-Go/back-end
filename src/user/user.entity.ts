@@ -28,6 +28,11 @@ export class User extends BaseEntity<User> {
   name: string;
 
   @Column({
+    nullable: true,
+  })
+  imageUrl: string;
+
+  @Column({
     nullable: false,
     unique: true,
   })

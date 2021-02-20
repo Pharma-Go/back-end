@@ -30,6 +30,16 @@ export class Establishment extends BaseEntity<Establishment> {
   })
   imageUrl: string;
 
+  @Column({
+    nullable: false,
+  })
+  opensAt: string;
+
+  @Column({
+    nullable: false,
+  })
+  closesAt: string;
+
   @OneToMany(
     () => Product,
     product => product.establishment,

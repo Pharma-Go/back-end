@@ -160,12 +160,10 @@ export class InvoiceService {
   }
 
   public async getRecentsInvoices(user: User): Promise<Invoice[]> {
-    return this.repo.find({
-      relations: ['products', 'buyer'],
-      where: { buyer: user.id, paymentStatus: PaymentStatus.paid },
-      order: {
-        paymentDate: 'DESC',
-      },
-    });
+    return this.repo
+      .createQueryBuilder('invoice')
+      .innerJoinAndSelect('invoice.products', 'products')
+      .orderBy('invoice.paymentDate', 'DESC')
+      .getMany();
   }
 }

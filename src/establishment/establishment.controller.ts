@@ -34,6 +34,11 @@ export class EstablishmentController {
     return this.service.getAll();
   }
 
+  @Get('mostRated')
+  public getMostRated() {
+    return this.service.getMostRated();
+  }
+
   @Get(':id')
   public getOne(@Param('id') id: string) {
     return this.service.getOne(id, {

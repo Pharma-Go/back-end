@@ -3,6 +3,7 @@ import { Establishment } from './establishment.entity';
 import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EstablishmentDto } from './dto/establishment.dto';
+import { Review } from 'src/review/review.entity';
 @Injectable()
 export class EstablishmentService {
   constructor(
@@ -21,6 +22,7 @@ export class EstablishmentService {
       relations: ['address'],
     });
   }
+
   public async updateEstablishment(
     id: string,
     user: DeepPartial<Establishment>,
@@ -47,5 +49,16 @@ export class EstablishmentService {
       relations: ['products', 'address'],
       where: `Establishment.name ILIKE '%${term}%'`,
     });
+  }
+
+  public async getMostRated() {
+    return (
+      await this.repo
+        .createQueryBuilder('est')
+        .innerJoinAndSelect('est.reviews', 'reviews')
+        .orderBy('reviews.stars', 'DESC')
+        .leftJoinAndSelect('est.address', 'address')
+        .getMany()
+    ).slice(0, 3);
   }
 }
