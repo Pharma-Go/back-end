@@ -62,8 +62,7 @@ export class InvoiceController {
   @OAuthPublic()
   @Post('pagarme/accept')
   public acceptByPagarme(@Body() body: any) {
-    console.log('body', body);
-    this.service.acceptedByPagarme();
+    this.service.acceptedByPagarme(body);
   }
 
   @Put('deliverer/:id/accept')

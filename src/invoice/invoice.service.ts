@@ -66,8 +66,24 @@ export class InvoiceService {
     }
   }
 
-  public acceptedByPagarme() {
-    this.invoiceGateway.server.emit('newInvoice');
+  public async acceptedByPagarme(body: any) {
+    if (body.event === 'transaction_status_changed') {
+      if (
+        body.transaction &&
+        body.transaction.status &&
+        body.transaction.metadata &&
+        body.transaction.metadata.invoice_id
+      ) {
+        const invoiceId = body.transaction.metadata.invoice_id;
+
+        await this.repo.update(invoiceId, {
+          paymentStatus: body.transaction.status,
+          paymentDate: new Date(),
+        });
+
+        this.invoiceGateway.server.emit('newInvoice');
+      }
+    }
   }
 
   public async createInvoiceInPagarme(
