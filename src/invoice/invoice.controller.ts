@@ -2,7 +2,8 @@ import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { ApiOAuth2, ApiTags } from '@nestjs/swagger';
 import {
   CurrentUser,
-  OAuthActionsScope, OAuthPublic,
+  OAuthActionsScope,
+  OAuthPublic,
 } from 'src/lib/decorators/oauth.decorator';
 import { Invoice } from './invoice.entity';
 import { InvoiceService } from './invoice.service';
@@ -51,8 +52,12 @@ export class InvoiceController {
 
   @OAuthPublic()
   @Post('pagarme/accept')
-  public acceptByPagarme(@Query('postback') postback: any) {
-    console.log(postback);
+  public acceptByPagarme(
+    @Query('postback') postback: any,
+    @Query('postback_body') queryBody: any,
+    @Body('postback_body') body: any,
+  ) {
+    console.log(postback, queryBody, body);
     this.service.acceptedByPagarme();
   }
 
