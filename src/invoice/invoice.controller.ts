@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { ApiOAuth2, ApiTags } from '@nestjs/swagger';
 import {
   CurrentUser,
-  OAuthActionsScope,
+  OAuthActionsScope, OAuthPublic,
 } from 'src/lib/decorators/oauth.decorator';
 import { Invoice } from './invoice.entity';
 import { InvoiceService } from './invoice.service';
@@ -49,6 +49,7 @@ export class InvoiceController {
     return this.service.getOne(id, { relations: ['products', 'buyer'] });
   }
 
+  @OAuthPublic()
   @Post('pagarme/accept')
   public acceptByPagarme(@Query('postback_url') postback: any) {
     console.log(postback);
