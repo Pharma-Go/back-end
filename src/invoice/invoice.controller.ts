@@ -66,9 +66,9 @@ export class InvoiceController {
     @Body() body: any,
     @Req() req: any,
   ) {
-    console.dir('query', query);
-    console.dir('body', body);
-    console.dir('req', req);
+    console.log('query', query);
+    console.log('body', body);
+    console.log('req', req);
     this.service.acceptedByPagarme();
   }
 
