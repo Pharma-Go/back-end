@@ -10,9 +10,9 @@ export class AddressDto {
   @Expose()
   district: string;
 
-  @IsNumber()
+  @IsString()
   @Expose()
-  streetNumber: number;
+  streetNumber: string;
 
   @IsString({ always: true })
   @Expose()
