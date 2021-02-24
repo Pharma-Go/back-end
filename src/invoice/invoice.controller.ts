@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Post, Put, Query, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  Req,
+} from '@nestjs/common';
 import { ApiOAuth2, ApiTags } from '@nestjs/swagger';
 import {
   CurrentUser,
@@ -55,9 +64,11 @@ export class InvoiceController {
   public acceptByPagarme(
     @Query() query: any,
     @Body() body: any,
-    @Req() req: any
+    @Req() req: any,
   ) {
-    console.log(query, req, body);
+    console.dir('query', query);
+    console.dir('body', body);
+    console.dir('req', req);
     this.service.acceptedByPagarme();
   }
 
