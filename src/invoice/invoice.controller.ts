@@ -49,7 +49,7 @@ export class InvoiceController {
     return this.service.getOne(id, { relations: ['products', 'buyer'] });
   }
 
-  @Get('pagarme/accept')
+  @Post('pagarme/accept')
   public acceptByPagarme(@Query('postback_url') postback: any) {
     console.log(postback);
     this.service.acceptedByPagarme();
