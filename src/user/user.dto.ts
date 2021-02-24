@@ -27,7 +27,6 @@ export class UserDto {
   @Expose()
   password: string;
 
-  @IsEnum(Role)
   @Expose()
   role: Role;
 }

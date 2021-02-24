@@ -84,7 +84,7 @@ export class InvoiceService {
 
         this.invoiceGateway.server.emit(
           'newInvoice',
-          this.getInvoice(invoiceId),
+          await this.getInvoice(invoiceId),
         );
       }
     }
