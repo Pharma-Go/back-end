@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiOAuth2, ApiTags } from '@nestjs/swagger';
 import { Crud } from '@nestjsx/crud';
 import { OAuthActionsScope } from 'src/lib/decorators/oauth.decorator';
@@ -22,6 +22,11 @@ import { ProductService } from '../product/product.service';
 })
 export class CategoryController {
   constructor(public readonly service: CategoryService) {}
+
+  @Get(':id')
+  public async getCategory(@Param('id') id: string) {
+    return this.service.getCategory(id);
+  }
 
   @Post('')
   public async createCategory(@Body() body: Category): Promise<Category> {
