@@ -33,9 +33,9 @@ export class ProductService {
 
   public async updateProduct(
     id: string,
-    user: DeepPartial<Product>,
+    product: DeepPartial<Product>,
   ): Promise<Product> {
-    await this.repo.update(id, user);
+    await this.repo.update(id, product);
     return this.getOne(id, {
       relations: ['establishment', 'category'],
     });

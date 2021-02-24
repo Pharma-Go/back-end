@@ -41,7 +41,7 @@ export class EstablishmentService {
   }
 
   public async getAll(): Promise<Establishment[]> {
-    return this.repo.find({ relations: ['products'] });
+    return this.repo.find();
   }
 
   public searchEstablishment(term: string): Promise<Establishment[]> {

@@ -15,6 +15,9 @@ export class InvoiceDto {
   @Expose()
   buyer: string;
 
+  @Expose()
+  deliverer: string;
+
   @IsString()
   @Expose()
   cardId: string;

@@ -11,13 +11,13 @@ import { ReviewService } from './review.service';
 @ApiOAuth2(['public'])
 @OAuthActionsScope({
   'Create-Many': ['admin'],
-  'Create-One': ['admin', 'default'],
-  'Update-One': ['admin', 'default'],
+  'Create-One': ['admin', 'employee', 'default'],
+  'Update-One': ['admin', 'employee', 'default'],
   'Delete-All': ['admin'],
-  'Delete-One': ['admin', 'default'],
-  'Read-All': ['admin', 'default'],
-  'Read-One': ['admin', 'default'],
-  'Replace-One': ['admin', 'default'],
+  'Delete-One': ['admin', 'employee', 'default'],
+  'Read-All': ['admin', 'employee', 'default'],
+  'Read-One': ['admin', 'employee', 'default'],
+  'Replace-One': ['admin', 'employee', 'default'],
 })
 export class ReviewController {
   constructor(private reviewService: ReviewService) {}

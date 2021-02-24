@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { User } from './user.entity';
+import { Role, User } from './user.entity';
 import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as BCrypt from 'bcrypt';
@@ -60,5 +60,14 @@ export class UserService {
 
   public async getAll(): Promise<User[]> {
     return this.repo.find({ relations: ['address', 'cards'] });
+  }
+
+  public getAvailableDeliverers() {
+    return this.repo.find({
+      where: {
+        available: true,
+        role: Role.EMPLOYEE,
+      },
+    });
   }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { ApiOAuth2, ApiTags } from '@nestjs/swagger';
 import {
   CurrentUser,
@@ -9,18 +9,19 @@ import { InvoiceService } from './invoice.service';
 import { SanitizePipe } from 'src/lib/pipes/sanitize.pipe';
 import { InvoiceDto } from './invoice.dto';
 import { User } from 'src/user/user.entity';
+
 @ApiTags('Invoice')
 @Controller('invoices')
 @ApiOAuth2(['public'])
 @OAuthActionsScope({
   'Create-Many': ['admin'],
-  'Create-One': ['admin', 'default'],
-  'Update-One': ['admin', 'default'],
+  'Create-One': ['admin', 'employee', 'default'],
+  'Update-One': ['admin', 'employee', 'default'],
   'Delete-All': ['admin'],
-  'Delete-One': ['admin', 'default'],
-  'Read-All': ['admin', 'default'],
-  'Read-One': ['admin', 'default'],
-  'Replace-One': ['admin', 'default'],
+  'Delete-One': ['admin', 'employee', 'default'],
+  'Read-All': ['admin', 'employee', 'default'],
+  'Read-One': ['admin', 'employee', 'default'],
+  'Replace-One': ['admin', 'employee', 'default'],
 })
 export class InvoiceController {
   constructor(public readonly service: InvoiceService) {}
@@ -38,14 +39,30 @@ export class InvoiceController {
     return this.service.getAll();
   }
 
-  @Get('recents')
-  public getRecentsInvoices(@CurrentUser() user: User) {
-    return this.service.getRecentsInvoices(user);
+  @Get('recent')
+  public getRecentInvoices(@CurrentUser() user: User) {
+    return this.service.getRecentInvoices(user);
   }
 
   @Get(':id')
   public getOne(@Param('id') id: string) {
     return this.service.getOne(id, { relations: ['products', 'buyer'] });
+  }
+
+  @Get('pagarme/accept')
+  public acceptByPagarme(@Query('postback_url') postback: any) {
+    console.log(postback);
+    this.service.acceptedByPagarme();
+  }
+
+  @Put('deliverer/:id/accept')
+  public acceptInvoice(@Param('id') id: string, @CurrentUser() user: User) {
+    return this.service.acceptInvoice(id, user);
+  }
+
+  @Put('/:id/delivered')
+  public invoiceDelivered(@Param('id') id: string, @CurrentUser() user: User) {
+    return this.service.invoiceDelivered(id, user);
   }
 
   @Put(':id')

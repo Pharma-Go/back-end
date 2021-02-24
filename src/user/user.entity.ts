@@ -17,7 +17,8 @@ import { Review } from 'src/review/review.entity';
 
 export enum Role {
   ADMIN = 'admin',
-  DEFAULT = 'default',
+  EMPLOYEE = 'employee',
+  DEFAULT = 'employee',
 }
 
 @Entity()
@@ -39,6 +40,12 @@ export class User extends BaseEntity<User> {
   email: string;
 
   @Column({
+    nullable: true,
+    default: false,
+  })
+  available: boolean;
+
+  @Column({
     nullable: false,
     unique: true,
   })
@@ -52,7 +59,7 @@ export class User extends BaseEntity<User> {
   password: string;
 
   @Column({
-    enum: [Role.ADMIN, Role.DEFAULT],
+    enum: [Role.ADMIN, Role.EMPLOYEE, Role.DEFAULT],
     default: Role.DEFAULT,
   })
   role: Role;
@@ -71,6 +78,12 @@ export class User extends BaseEntity<User> {
     invoice => invoice.buyer,
   )
   invoices: Invoice[];
+
+  @OneToMany(
+    () => Invoice,
+    invoice => invoice.deliverer,
+  )
+  deliveries: Invoice[];
 
   @OneToMany(
     () => Card,

@@ -32,4 +32,10 @@ export class AddressDto {
 
   @Expose()
   reference: string;
+
+  @Expose()
+  establishment: string;
+
+  @Expose()
+  user: string;
 }

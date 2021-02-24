@@ -16,8 +16,8 @@ import { ProductService } from '../product/product.service';
   'Update-One': ['admin'],
   'Delete-All': ['admin'],
   'Delete-One': ['admin'],
-  'Read-All': ['admin', 'default', 'default'],
-  'Read-One': ['admin', 'default', 'default'],
+  'Read-All': ['admin', 'employee', 'default', 'employee', 'default'],
+  'Read-One': ['admin', 'employee', 'default', 'employee', 'default'],
   'Replace-One': ['admin'],
 })
 export class CategoryController {

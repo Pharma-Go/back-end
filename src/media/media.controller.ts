@@ -15,12 +15,12 @@ import { MediaService } from './media.service';
 @OAuthActionsScope({
   'Create-Many': ['admin'],
   'Create-One': ['admin'],
-  'Update-One': ['admin', 'default'],
+  'Update-One': ['admin', 'employee', 'default'],
   'Delete-All': ['admin'],
-  'Delete-One': ['admin', 'default'],
-  'Read-All': ['admin', 'default'],
-  'Read-One': ['admin', 'default'],
-  'Replace-One': ['admin', 'default'],
+  'Delete-One': ['admin', 'employee', 'default'],
+  'Read-All': ['admin', 'employee', 'default'],
+  'Read-One': ['admin', 'employee', 'default'],
+  'Replace-One': ['admin', 'employee', 'default'],
 })
 export class MediaController {
   constructor(private service: MediaService) {}

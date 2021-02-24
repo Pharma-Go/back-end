@@ -45,6 +45,18 @@ export class Invoice extends BaseEntity<Invoice> {
   })
   paymentDate: Date;
 
+  @Column({
+    nullable: false,
+    default: false,
+  })
+  accepted: boolean;
+
+  @Column({
+    nullable: false,
+    default: false,
+  })
+  delivered: boolean;
+
   @ManyToMany(
     () => Product,
     product => product.invoices,
@@ -60,4 +72,10 @@ export class Invoice extends BaseEntity<Invoice> {
     user => user.invoices,
   )
   buyer: User;
+
+  @ManyToOne(
+    () => User,
+    user => user.deliveries,
+  )
+  deliverer: User;
 }
