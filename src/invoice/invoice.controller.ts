@@ -51,7 +51,7 @@ export class InvoiceController {
 
   @OAuthPublic()
   @Post('pagarme/accept')
-  public acceptByPagarme(@Query('postback_url') postback: any) {
+  public acceptByPagarme(@Query('postback') postback: any) {
     console.log(postback);
     this.service.acceptedByPagarme();
   }
