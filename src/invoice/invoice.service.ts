@@ -18,7 +18,8 @@ export class InvoiceService {
     private productService: ProductService,
     private userService: UserService,
     private invoiceGateway: InvoiceGateway,
-  ) {}
+  ) {
+  }
 
   public async createInvoice(invoiceDto: any, user: User) {
     if (!invoiceDto.products || invoiceDto.products?.length === 0) {
@@ -81,7 +82,10 @@ export class InvoiceService {
           paymentDate: new Date(),
         });
 
-        this.invoiceGateway.server.emit('newInvoice');
+        this.invoiceGateway.server.emit(
+          'newInvoice',
+          this.getInvoice(invoiceId),
+        );
       }
     }
   }
