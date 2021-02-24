@@ -61,14 +61,8 @@ export class InvoiceController {
 
   @OAuthPublic()
   @Post('pagarme/accept')
-  public acceptByPagarme(
-    @Query() query: any,
-    @Body() body: any,
-    @Req() req: any,
-  ) {
-    console.log('query', query);
-    console.log('body', body);
-    console.log('req', req);
+  public acceptByPagarme(@Body() body: any) {
+    console.log('body', body.metadata);
     this.service.acceptedByPagarme();
   }
 

@@ -118,6 +118,9 @@ export class InvoiceService {
             ).quantity,
           })),
         ),
+        metadata: {
+          invoice_id: invoice.id,
+        },
       })
       .catch((err: any) => {
         throw new BadRequestException(err.response.errors[0].message);
@@ -181,7 +184,9 @@ export class InvoiceService {
     const invoice = await this.getInvoice(id);
 
     if (invoice.paymentStatus !== PaymentStatus.paid) {
-      throw new BadRequestException('Não é possível aceitar um pedido sem que ele esteja pago.')
+      throw new BadRequestException(
+        'Não é possível aceitar um pedido sem que ele esteja pago.',
+      );
     }
 
     await this.repo.update(id, {
