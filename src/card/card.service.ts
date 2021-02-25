@@ -39,17 +39,21 @@ export class CardService {
   public async getCards(user: User) {
     const pagarmeCards = await App.client.cards.all();
 
-    return user.cards?.filter((card: Card) => {
+    const cards = [];
+
+    for (const userCard of user.cards) {
       const pagarmeCard = pagarmeCards.find(
-        (pagarmeCard: PagarmeCard) => pagarmeCard.id === card.card_id,
+        (pagarmeCard: PagarmeCard) => pagarmeCard.id === userCard.card_id,
       );
 
-      return {
-        ...card,
+      cards.push({
+        ...userCard,
         first_digits: pagarmeCard.first_digits,
         last_digits: pagarmeCard.last_digits,
-      };
-    });
+      });
+    }
+
+    return cards;
   }
 
   public async getCard(cardId: string): Promise<PagarmeCard> {
