@@ -23,6 +23,11 @@ import { ProductService } from '../product/product.service';
 export class CategoryController {
   constructor(public readonly service: CategoryService) {}
 
+  @Get('')
+  public async getCategories() {
+    return this.service.getCategories();
+  }
+
   @Get(':id')
   public async getCategory(@Param('id') id: string) {
     return this.service.getCategory(id);

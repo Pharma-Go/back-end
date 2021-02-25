@@ -6,7 +6,10 @@ import { Category } from './category.entity';
 
 @Injectable()
 export class CategoryService {
-  constructor(@InjectRepository(Category) private repo: Repository<Category>) {
+  constructor(@InjectRepository(Category) private repo: Repository<Category>) {}
+
+  public async getCategories(): Promise<Category[]> {
+    return this.repo.find({ relations: ['products'] });
   }
 
   public getCategory(id: string): Promise<Category> {
