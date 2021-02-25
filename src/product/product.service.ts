@@ -1,11 +1,18 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 import { ProductDto } from './product.dto';
 import { Product } from './product.entity';
 
 @Injectable()
 export class ProductService {
+  public baseRelations: string[] = [
+    'category',
+    'establishment',
+    'invoices',
+    'reviews',
+  ];
+
   constructor(
     @InjectRepository(Product)
     private repo: Repository<Product>,
@@ -26,9 +33,7 @@ export class ProductService {
 
     const product = await this.repo.save((dto as unknown) as Product);
 
-    return this.getOne(product.id, {
-      relations: ['establishment', 'category'],
-    });
+    return this.getOne(product.id);
   }
 
   public async updateProduct(
@@ -36,13 +41,11 @@ export class ProductService {
     product: DeepPartial<Product>,
   ): Promise<Product> {
     await this.repo.update(id, product);
-    return this.getOne(id, {
-      relations: ['establishment', 'category'],
-    });
+    return this.getOne(id);
   }
 
-  public async getOne(id: string, options?: FindOneOptions): Promise<Product> {
-    return this.repo.findOne(id, options);
+  public async getOne(id: string): Promise<Product> {
+    return this.repo.findOne(id, { relations: this.baseRelations });
   }
 
   public async getAll(): Promise<Product[]> {

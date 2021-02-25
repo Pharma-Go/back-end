@@ -26,6 +26,11 @@ export class ProductController {
     return this.service.getAll();
   }
 
+  @Get(':id')
+  async getProduct(@Param('id') id: string) {
+    return this.service.getOne(id);
+  }
+
   @Get(':establishment/highlights')
   public getHighlights(@Param('establishment') establishmentId: string) {
     return this.service.getHighlights(establishmentId);
