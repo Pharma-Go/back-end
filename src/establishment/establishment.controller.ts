@@ -41,9 +41,7 @@ export class EstablishmentController {
 
   @Get(':id')
   public getOne(@Param('id') id: string) {
-    return this.service.getOne(id, {
-      relations: ['address', 'products', 'reviews'],
-    });
+    return this.service.getOne(id);
   }
 
   @Put(':id')

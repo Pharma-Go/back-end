@@ -31,11 +31,6 @@ export class Product extends BaseEntity<Product> {
   price: number;
 
   @Column({
-    nullable: true,
-  })
-  originalPrice: number;
-
-  @Column({
     nullable: false,
   })
   available: boolean;

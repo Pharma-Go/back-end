@@ -3,9 +3,16 @@ import { Establishment } from './establishment.entity';
 import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EstablishmentDto } from './dto/establishment.dto';
-import { Review } from 'src/review/review.entity';
+
 @Injectable()
 export class EstablishmentService {
+  public baseRelations: string[] = [
+    'address',
+    'products',
+    'products.category',
+    'reviews',
+  ];
+
   constructor(
     @InjectRepository(Establishment)
     private repo: Repository<Establishment>,
@@ -18,9 +25,7 @@ export class EstablishmentService {
       (dto as unknown) as Establishment,
     );
 
-    return this.getOne(establishment.id, {
-      relations: ['address'],
-    });
+    return this.getOne(establishment.id);
   }
 
   public async updateEstablishment(
@@ -28,16 +33,11 @@ export class EstablishmentService {
     user: DeepPartial<Establishment>,
   ): Promise<Establishment> {
     await this.repo.update(id, user);
-    return this.getOne(id, {
-      relations: ['address', 'products'],
-    });
+    return this.getOne(id);
   }
 
-  public async getOne(
-    id: string,
-    options?: FindOneOptions,
-  ): Promise<Establishment> {
-    return this.repo.findOne(id, options);
+  public async getOne(id: string): Promise<Establishment> {
+    return this.repo.findOne(id, { relations: this.baseRelations });
   }
 
   public async getAll(): Promise<Establishment[]> {
