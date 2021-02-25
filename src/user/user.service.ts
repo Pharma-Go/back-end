@@ -5,13 +5,18 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as BCrypt from 'bcrypt';
 import { classToPlain } from 'class-transformer';
 import { UserDto } from './user.dto';
-import { AddressService } from 'src/address/address.service';
 @Injectable()
 export class UserService {
+  public baseRelations: string[] = [
+    'address',
+    'card',
+    'reviews',
+    'deliveries',
+    'invoices',
+  ];
   constructor(
     @InjectRepository(User)
     private repo: Repository<User>,
-    private addressService: AddressService,
   ) {}
 
   async getByUsernameAndPassword(email: string, password: string) {
@@ -40,7 +45,9 @@ export class UserService {
   }
 
   public async getMe(user: User): Promise<User> {
-    return this.repo.findOne(user.id);
+    return this.repo.findOne(user.id, {
+      relations: this.baseRelations,
+    });
   }
 
   public async updateUser(id: string, user: DeepPartial<User>): Promise<User> {
@@ -51,7 +58,7 @@ export class UserService {
   public async getOne(id: string, options?: FindOneOptions): Promise<User> {
     if (!options) {
       options = {
-        relations: ['address', 'cards'],
+        relations: this.baseRelations,
       };
     }
 
@@ -59,7 +66,9 @@ export class UserService {
   }
 
   public async getAll(): Promise<User[]> {
-    return this.repo.find({ relations: ['address', 'cards'] });
+    return this.repo.find({
+      relations: this.baseRelations,
+    });
   }
 
   public getAvailableDeliverers() {
