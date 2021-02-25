@@ -5,13 +5,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as BCrypt from 'bcrypt';
 import { classToPlain } from 'class-transformer';
 import { UserDto } from './user.dto';
-import { AddressService } from 'src/address/address.service';
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private repo: Repository<User>,
-    private addressService: AddressService,
   ) {}
 
   async getByUsernameAndPassword(email: string, password: string) {
