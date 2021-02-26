@@ -19,6 +19,7 @@ import { SanitizePipe } from '../lib/pipes/sanitize.pipe';
 import { UserDto } from './user.dto';
 import { CardDto } from 'src/card/card.dto';
 import { PagarmeCard } from 'src/card/card.model';
+import { ChangePasswordDto } from './change-password.dto';
 
 @ApiTags('Users')
 @Controller('users')
@@ -40,6 +41,14 @@ export class UserController {
   @Post()
   public createUser(@Body(new SanitizePipe(UserDto)) dto: UserDto) {
     return this.service.createUser(dto);
+  }
+
+  @Post('changePassword')
+  public changePassword(
+    @Body(new SanitizePipe(ChangePasswordDto)) dto: ChangePasswordDto,
+    @CurrentUser() user: User,
+  ) {
+    return this.service.changePassword(user, dto);
   }
 
   @Get('')

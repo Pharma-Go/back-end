@@ -1,11 +1,8 @@
 import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiOAuth2, ApiTags } from '@nestjs/swagger';
-import { Crud } from '@nestjsx/crud';
 import { OAuthActionsScope } from 'src/lib/decorators/oauth.decorator';
 import { Category } from './category.entity';
 import { CategoryService } from './category.service';
-import { Product } from '../product/product.entity';
-import { ProductService } from '../product/product.service';
 
 @ApiTags('Categories')
 @Controller('category')

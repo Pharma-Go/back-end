@@ -18,6 +18,7 @@ import { CardModule } from './card/card.module';
 import { ReviewModule } from './review/review.module';
 import { CouponModule } from './coupon/coupon.module';
 import { MediaModule } from './media/media.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { MediaModule } from './media/media.module';
     CardModule,
     CouponModule,
     MediaModule,
+    MailModule,
   ],
   controllers: [AppController, CardController],
   providers: [AppService],

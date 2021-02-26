@@ -5,6 +5,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as BCrypt from 'bcrypt';
 import { classToPlain } from 'class-transformer';
 import { UserDto } from './user.dto';
+import { ChangePasswordDto } from './change-password.dto';
+import { BCryptTransformer } from 'src/lib/bcrypt';
+import { MailerService } from '@nestjs-modules/mailer';
 @Injectable()
 export class UserService {
   public baseRelations: string[] = [
@@ -17,6 +20,7 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private repo: Repository<User>,
+    private mailerService: MailerService,
   ) {}
 
   async getByUsernameAndPassword(email: string, password: string) {
@@ -45,6 +49,15 @@ export class UserService {
   }
 
   public async getMe(user: User): Promise<User> {
+    this.mailerService.sendMail({
+      to: 'lucas.buchalla.sesti@outlook.com',
+      from: 'noreply@pharmago.com',
+      subject: 'Email de confirmação',
+      template: 'index',
+      // context: {
+      //   token: user.confirmationToken,
+      // },
+    });
     return this.repo.findOne(user.id, {
       relations: this.baseRelations,
     });
@@ -76,5 +89,23 @@ export class UserService {
         role: Role.EMPLOYEE,
       },
     });
+  }
+
+  public async changePassword(user: User, dto: ChangePasswordDto) {
+    if (dto.newPassword !== dto.repeatedNewPassword) {
+      throw new BadRequestException('A senha deve se coincidir.');
+    }
+
+    const bcrypt = new BCryptTransformer();
+
+    if (!bcrypt.compare(dto.currentPassword, user.password)) {
+      throw new BadRequestException('A senha atual está incorreta.');
+    }
+
+    await this.repo.update(user.id, {
+      password: dto.newPassword,
+    });
+
+    return this.getOne(user.id);
   }
 }
