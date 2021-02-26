@@ -57,7 +57,9 @@ export class CardService {
   }
 
   public async getCard(cardId: string): Promise<PagarmeCard> {
-    const card = await App.client.cards.find({ id: cardId });
+    const card = await App.client.cards.find({ id: cardId }).catch(err => {
+      throw new BadRequestException(err.response.errors);
+    });
 
     if (!card) {
       throw new BadRequestException(

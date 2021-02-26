@@ -49,12 +49,12 @@ export class ProductService {
   }
 
   public async getAll(): Promise<Product[]> {
-    return this.repo.find({ relations: ['establishment', 'category'] });
+    return this.repo.find({ relations: this.baseRelations });
   }
 
   public async getHighlights(establishmentId: string): Promise<Product[]> {
     const products = await this.repo.find({
-      relations: ['invoices'],
+      relations: this.baseRelations,
       where: {
         establishment: establishmentId,
       },
