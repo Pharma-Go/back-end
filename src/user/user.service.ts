@@ -49,15 +49,6 @@ export class UserService {
   }
 
   public async getMe(user: User): Promise<User> {
-    this.mailerService.sendMail({
-      to: 'lucas.buchalla.sesti@outlook.com',
-      from: 'noreply@pharmago.com',
-      subject: 'Email de confirmação',
-      template: 'index',
-      // context: {
-      //   token: user.confirmationToken,
-      // },
-    });
     return this.repo.findOne(user.id, {
       relations: this.baseRelations,
     });
@@ -107,5 +98,25 @@ export class UserService {
     });
 
     return this.getOne(user.id);
+  }
+
+  public async recoverPassword(email: string) {
+    if (
+      await this.repo
+        .createQueryBuilder()
+        .where('email = :email', { email })
+        .getOne()
+    ) {
+      await this.mailerService.sendMail({
+        to: email,
+        from: 'noreply.pharmago@gmail.com',
+        subject: 'Recuperação de senha',
+        template: 'index',
+      });
+
+      return;
+    }
+
+    throw new BadRequestException('Não existe um usuário com este email.');
   }
 }

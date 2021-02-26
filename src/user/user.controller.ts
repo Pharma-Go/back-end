@@ -56,6 +56,11 @@ export class UserController {
     return this.service.getAll();
   }
 
+  @Get('recoverPassword/:email')
+  public recoverPassword(@Param('email') email: string) {
+    return this.service.recoverPassword(email);
+  }
+
   @Get('availableDeliverers')
   public getAvailableDeliverers() {
     return this.service.getAvailableDeliverers();

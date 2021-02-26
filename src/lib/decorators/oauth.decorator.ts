@@ -1,6 +1,9 @@
 import { OAUTH_PUBLIC, OAUTH_SCOPE, OAUTH_ACTIONS_SCOPE } from '../meta';
-import { SetMetadata, createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { BaseRouteName, CrudActions } from '@nestjsx/crud';
+import {
+  SetMetadata,
+  createParamDecorator,
+  ExecutionContext,
+} from '@nestjs/common';
 import { ApiOAuth2 } from '@nestjs/swagger';
 
 /**
@@ -20,10 +23,10 @@ export const OAuthScope = (scopes: string[]) =>
  * @param scopes Escopos requiridos
  */
 export const OAuthActionsScope = (
-  methodsScope: { [key in CrudActions]?: string[] },
+  methodsScope: { [key in any]?: string[] },
 ): ClassDecorator => {
   return target => {
-    const handlers: Record<CrudActions, String> = {
+    const handlers: any = {
       'Create-Many': 'createManyBase',
       'Create-One': 'createOneBase',
       'Delete-One': 'deleteOneBase',

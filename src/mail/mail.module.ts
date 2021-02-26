@@ -11,12 +11,12 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
           port: '587',
           tls: { ciphers: 'SSLv3' }, // gmail
           auth: {
-            user: 'lucassesti@seeken.me',
-            pass: 'kVCRCpRbj7WN',
+            user: 'noreply.pharmago',
+            pass: '1oZaF6i0SijS',
           },
         },
         defaults: {
-          from: 'seeken@seeken.me',
+          from: 'noreply.pharmago@gmail.com',
         },
         template: {
           dir: __dirname + '/templates',
