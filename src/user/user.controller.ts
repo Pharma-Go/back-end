@@ -56,6 +56,7 @@ export class UserController {
     return this.service.getAll();
   }
 
+  @OAuthPublic()
   @Get('recoverPassword/:email')
   public recoverPassword(@Param('email') email: string) {
     return this.service.recoverPassword(email);
