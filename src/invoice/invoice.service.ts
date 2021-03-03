@@ -46,6 +46,8 @@ export class InvoiceService {
       );
 
       if (product.strict) {
+        invoiceDto['strictAccepted'] = false;
+
         if (!invoiceDto.itemProducts[i].prescriptionUrl) {
           throw new BadRequestException(
             `É obrigatório prescrição médica para o produto ${product.name}`,
