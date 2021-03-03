@@ -14,8 +14,8 @@ import { ProductService } from './product.service';
   'Update-One': ['admin'],
   'Delete-All': ['admin'],
   'Delete-One': ['admin'],
-  'Read-All': ['admin', 'employee', 'default', 'employee', 'default'],
-  'Read-One': ['admin', 'employee', 'default', 'employee', 'default'],
+  'Read-All': ['admin', 'employee', 'default'],
+  'Read-One': ['admin', 'employee', 'default'],
   'Replace-One': ['admin'],
 })
 export class ProductController {
@@ -24,6 +24,11 @@ export class ProductController {
   @Get('')
   async getProducts() {
     return this.service.getAll();
+  }
+
+  @Get('search/:term')
+  public async searchProduct(@Param('term') term: string): Promise<Product[]> {
+    return await this.service.searchProducts(term);
   }
 
   @Get(':id')
@@ -47,11 +52,4 @@ export class ProductController {
   async putOne(@Param('id') id: string, @Body() product: Product) {
     return await this.service.updateProduct(id, product);
   }
-
-  // @Post('search')
-  // public async searchProduct(
-  //   @Body() body: { term: string },
-  // ): Promise<Product[]> {
-  //   return await this.service.searchProduct(body);
-  // }
 }

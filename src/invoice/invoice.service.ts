@@ -1,28 +1,31 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 import { Invoice, PaymentStatus } from './invoice.entity';
 import { ProductService } from 'src/product/product.service';
 import { Role, User } from 'src/user/user.entity';
 import { App } from 'src/main';
 import { Product } from 'src/product/product.entity';
-import { UserService } from 'src/user/user.service';
 import { InvoiceGateway } from './invoice.gateway';
+import { InvoiceDto } from './invoice.dto';
 
 @Injectable()
 export class InvoiceService {
-  public baseRelations: string[] = ['buyer', 'products', 'deliverer'];
+  public baseRelations: string[] = [
+    'buyer',
+    'itemProducts',
+    'deliverer',
+    'itemProducts.product',
+  ];
 
   constructor(
     @InjectRepository(Invoice) private repo: Repository<Invoice>,
     private productService: ProductService,
-    private userService: UserService,
     private invoiceGateway: InvoiceGateway,
-  ) {
-  }
+  ) {}
 
-  public async createInvoice(invoiceDto: any, user: User) {
-    if (!invoiceDto.products || invoiceDto.products?.length === 0) {
+  public async createInvoice(invoiceDto: InvoiceDto, user: User) {
+    if (!invoiceDto.itemProducts || invoiceDto.itemProducts?.length === 0) {
       throw new BadRequestException(
         'Não é possível criar uma venda sem produtos.',
       );
@@ -34,29 +37,38 @@ export class InvoiceService {
       );
     }
 
-    invoiceDto.total = 0;
+    invoiceDto['total'] = 0;
 
-    for (let i = 0; i < invoiceDto.products.length; i++) {
+    for (let i = 0; i < invoiceDto.itemProducts.length; i++) {
       const product = await this.productService.getOne(
-        invoiceDto.products[i].id,
+        invoiceDto.itemProducts[i].product.id,
       );
 
-      invoiceDto.total += product.price;
+      if (product.strict) {
+        if (!invoiceDto.itemProducts[i].prescriptionUrl) {
+          throw new BadRequestException(
+            `É obrigatório prescrição médica para o produto ${product.name}`,
+          );
+        }
+      }
+
+      const price = product.price * invoiceDto.itemProducts[i].quantity;
+
+      invoiceDto.itemProducts[i]['price'] = price;
+      invoiceDto['total'] += price;
     }
 
-    if (invoiceDto.discount > invoiceDto.total) {
+    if (invoiceDto.discount > invoiceDto['total']) {
       throw new BadRequestException(
         'Não é possível criar uma venda que o desconto seja maior que o valor total.',
       );
     }
 
-    invoiceDto.total = invoiceDto.total - invoiceDto.discount;
+    invoiceDto['total'] = invoiceDto['total'] - invoiceDto.discount;
 
     try {
-      const generatedInvoice = await this.repo.save(invoiceDto);
-      const invoice = await this.getOne(generatedInvoice.id, {
-        relations: this.baseRelations,
-      });
+      const generatedInvoice = await this.repo.save(invoiceDto as unknown);
+      const invoice = await this.getOne(generatedInvoice.id);
 
       if (invoice) {
         await this.createInvoiceInPagarme(invoiceDto, user, invoice);
@@ -82,12 +94,17 @@ export class InvoiceService {
           paymentDate: new Date(),
         });
 
-        this.invoiceGateway.server.emit(
-          'newInvoice',
-          await this.getInvoice(invoiceId),
-        );
+        const invoice = await this.getInvoice(invoiceId);
+
+        if (invoice.strictAccepted) {
+          this.emitNewInvoice(invoice);
+        }
       }
     }
+  }
+
+  public async emitNewInvoice(invoice: Invoice) {
+    this.invoiceGateway.server.emit('newInvoice', invoice);
   }
 
   public async createInvoiceInPagarme(
@@ -95,8 +112,8 @@ export class InvoiceService {
     user: User,
     invoice: Invoice,
   ) {
-    return App.client.transactions
-      .create({
+    try {
+      return App.client.transactions.create({
         amount: invoiceDto.total,
         card_id: invoiceDto.cardId,
         customer: {
@@ -131,20 +148,24 @@ export class InvoiceService {
           },
         },
         items: this.transformProductsToPagarmeItem(
-          invoice.products.map(product => ({
-            product,
-            quantity: invoiceDto.products.find(
-              productDto => productDto.id === product.id,
-            ).quantity,
-          })),
+          invoice.itemProducts.map(itemProduct => {
+            const product: Product = itemProduct.product;
+
+            return {
+              product: product,
+              quantity: invoiceDto.itemProducts.find(
+                itemProduct => itemProduct.product.id === product.id,
+              ).quantity,
+            };
+          }),
         ),
         metadata: {
           invoice_id: invoice.id,
         },
-      })
-      .catch((err: any) => {
-        throw new BadRequestException(err.response.errors[0].message);
       });
+    } catch (err) {
+      throw new BadRequestException(err.response.errors[0].message);
+    }
   }
 
   public transformProductsToPagarmeItem(
@@ -164,29 +185,16 @@ export class InvoiceService {
     invoice: DeepPartial<Invoice>,
   ): Promise<Invoice> {
     await this.repo.update(id, invoice);
-    return this.getOne(id, { relations: this.baseRelations });
+    return this.getOne(id);
   }
 
-  public async getOne(id: string, options?: FindOneOptions): Promise<Invoice> {
-    return this.repo.findOne(id, options);
+  public async getOne(id: string): Promise<Invoice> {
+    return this.repo.findOne(id, { relations: this.baseRelations });
   }
 
   public async getAll(): Promise<Invoice[]> {
     return this.repo.find({ relations: this.baseRelations });
   }
-
-  // public async search(body: { from: Date; until: Date }) {
-  //   return await this.repo.find({
-  //     created_at: Between(body.from, body.until),
-  //   });
-  // }
-
-  // public async searchInvoices(body: { title: string }): Promise<Invoice[]> {
-  //   return await this.repo.find({
-  //     relations: ['installments', 'products', 'seller', 'buyer'],
-  //     where: `Invoice.title ILIKE '%${body.title}%'`,
-  //   });
-  // }
 
   public async getInvoice(id: string): Promise<Invoice> {
     return this.repo.findOne(id, {
@@ -211,10 +219,30 @@ export class InvoiceService {
 
     await this.repo.update(id, {
       deliverer: user,
-      accepted: true,
+      delivererAccepted: true,
     });
 
     return this.getInvoice(id);
+  }
+
+  public async strictAccept(id: string, user: User): Promise<Invoice> {
+    if (user.role !== Role.ADMIN) {
+      throw new BadRequestException(
+        'Não é possível aceitar um pedido sem ser um admin.',
+      );
+    }
+
+    await this.repo.update(id, {
+      strictAccepted: true,
+    });
+
+    const invoice = await this.getInvoice(id);
+
+    if (invoice.paymentStatus === PaymentStatus.paid) {
+      this.emitNewInvoice(invoice);
+    }
+
+    return invoice;
   }
 
   public async invoiceDelivered(id: string, user: User): Promise<Invoice> {

@@ -1,17 +1,11 @@
 import { Category } from 'src/category/category.entity';
 import { Invoice } from 'src/invoice/invoice.entity';
-import { User } from 'src/user/user.entity';
 import { Establishment } from 'src/establishment/establishment.entity';
-import {
-  Entity,
-  Column,
-  OneToMany,
-  ManyToOne,
-  ManyToMany,
-  JoinTable,
-} from 'typeorm';
+import { Entity, Column, OneToMany, ManyToOne, ManyToMany } from 'typeorm';
 import { BaseEntity } from '../base-entity';
 import { Review } from 'src/review/review.entity';
+import { ItemProduct } from 'src/item-product/item-product.entity';
+import { User } from 'src/user/user.entity';
 
 @Entity()
 export class Product extends BaseEntity<Product> {
@@ -40,6 +34,12 @@ export class Product extends BaseEntity<Product> {
   })
   imageUrl: string;
 
+  @Column({
+    nullable: false,
+    default: true
+  })
+  strict: boolean;
+
   @ManyToOne(
     () => Category,
     category => category.products,
@@ -52,15 +52,21 @@ export class Product extends BaseEntity<Product> {
   )
   establishment: Establishment;
 
-  @ManyToMany(
-    () => Invoice,
-    invoice => invoice.products,
-  )
-  invoices: Invoice[];
-
   @OneToMany(
     () => Review,
     review => review.product,
   )
   reviews: Review[];
+
+  @OneToMany(
+    () => ItemProduct,
+    itemProduct => itemProduct.product,
+  )
+  itemProducts: ItemProduct[];
+
+  @ManyToMany(
+    () => User,
+    user => user.favoriteProducts,
+  )
+  favoriteUsers: User[];
 }

@@ -1,5 +1,5 @@
 import { BaseEntity } from 'src/base-entity';
-import { Product } from 'src/product/product.entity';
+import { ItemProduct } from 'src/item-product/item-product.entity';
 import { User } from 'src/user/user.entity';
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
 
@@ -49,7 +49,13 @@ export class Invoice extends BaseEntity<Invoice> {
     nullable: false,
     default: false,
   })
-  accepted: boolean;
+  strictAccepted: boolean;
+
+  @Column({
+    nullable: false,
+    default: false,
+  })
+  delivererAccepted: boolean;
 
   @Column({
     nullable: false,
@@ -58,14 +64,14 @@ export class Invoice extends BaseEntity<Invoice> {
   delivered: boolean;
 
   @ManyToMany(
-    () => Product,
+    () => ItemProduct,
     product => product.invoices,
     {
       cascade: true,
     },
   )
   @JoinTable()
-  products: Product[];
+  itemProducts: ItemProduct[];
 
   @ManyToOne(
     () => User,

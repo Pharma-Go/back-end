@@ -15,11 +15,23 @@ import { Invoice } from 'src/invoice/invoice.entity';
 import { Card } from 'src/card/card.entity';
 import { Review } from 'src/review/review.entity';
 
+import { Establishment } from 'src/establishment/establishment.entity';
+import { Product } from 'src/product/product.entity';
+
 export enum Role {
   ADMIN = 'admin',
   EMPLOYEE = 'employee',
   DEFAULT = 'employee',
 }
+
+export const userBaseRelations: string[] = [
+  'address',
+  'cards',
+  'deliveries',
+  'invoices',
+  'favoriteEstablishments',
+  'favoriteProducts',
+];
 
 @Entity()
 export class User extends BaseEntity<User> {
@@ -96,4 +108,18 @@ export class User extends BaseEntity<User> {
     review => review.author,
   )
   reviews: Review[];
+
+  @ManyToMany(
+    () => Establishment,
+    establishment => establishment.favoriteUsers,
+  )
+  @JoinTable()
+  favoriteEstablishments: Establishment[];
+
+  @ManyToMany(
+    () => Product,
+    product => product.favoriteUsers,
+  )
+  @JoinTable()
+  favoriteProducts: Product[];
 }

@@ -19,6 +19,8 @@ import { ReviewModule } from './review/review.module';
 import { CouponModule } from './coupon/coupon.module';
 import { MediaModule } from './media/media.module';
 import { MailModule } from './mail/mail.module';
+import { BffModule } from './bff/bff.module';
+import { ItemProductModule } from './item-product/item-product.module';
 
 @Module({
   imports: [
@@ -37,8 +39,10 @@ import { MailModule } from './mail/mail.module';
     CouponModule,
     MediaModule,
     MailModule,
+    BffModule,
+    ItemProductModule,
   ],
-  controllers: [AppController, CardController],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}

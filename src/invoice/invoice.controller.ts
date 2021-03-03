@@ -56,13 +56,18 @@ export class InvoiceController {
 
   @Get(':id')
   public getOne(@Param('id') id: string) {
-    return this.service.getOne(id, { relations: ['products', 'buyer'] });
+    return this.service.getOne(id);
   }
 
   @OAuthPublic()
   @Post('pagarme/accept')
   public acceptByPagarme(@Body() body: any) {
     this.service.acceptedByPagarme(body);
+  }
+
+  @Put('strict/:id/accept')
+  public strictAccept(@Param('id') id: string, @CurrentUser() user: User) {
+    return this.service.strictAccept(id, user);
   }
 
   @Put('deliverer/:id/accept')

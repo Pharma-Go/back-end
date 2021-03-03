@@ -9,7 +9,11 @@ export class InvoiceDto {
 
   @IsArray()
   @Expose()
-  products: { id: string; quantity: number }[];
+  itemProducts: {
+    product: { id: string };
+    quantity: number;
+    prescriptionUrl?: string;
+  }[];
 
   @IsString()
   @Expose()

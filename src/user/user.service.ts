@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Role, User } from './user.entity';
+import { Role, User, userBaseRelations } from './user.entity';
 import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as BCrypt from 'bcrypt';
@@ -10,18 +10,15 @@ import { BCryptTransformer } from 'src/lib/bcrypt';
 import { MailerService } from '@nestjs-modules/mailer';
 @Injectable()
 export class UserService {
-  public baseRelations: string[] = [
-    'address',
-    'cards',
-    'deliveries',
-    'invoices',
-  ];
+  public baseRelations: string[];
 
   constructor(
     @InjectRepository(User)
     private repo: Repository<User>,
     private mailerService: MailerService,
-  ) {}
+  ) {
+    this.baseRelations = userBaseRelations;
+  }
 
   async getByUsernameAndPassword(email: string, password: string) {
     const user = await this.repo.findOne({

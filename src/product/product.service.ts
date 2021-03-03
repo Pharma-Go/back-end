@@ -9,7 +9,7 @@ export class ProductService {
   public baseRelations: string[] = [
     'category',
     'establishment',
-    'invoices',
+    'itemProducts',
     'reviews',
   ];
 
@@ -61,14 +61,14 @@ export class ProductService {
     });
 
     const groupedBestProducts = products.reduce((acc, product) => {
-      if (!acc.has(product.invoices.length)) {
-        acc.set(product.invoices.length, []);
+      if (!acc.has(product.itemProducts.length)) {
+        acc.set(product.itemProducts.length, []);
       }
 
-      const productsMap = acc.get(product.invoices.length);
+      const productsMap = acc.get(product.itemProducts.length);
       productsMap.push(product);
 
-      acc.set(product.invoices.length, productsMap);
+      acc.set(product.itemProducts.length, productsMap);
       return acc;
     }, new Map<Number, Product[]>());
 
@@ -81,5 +81,12 @@ export class ProductService {
     });
 
     return groupedBestProducts.get(higherKey);
+  }
+
+  public async searchProducts(term: string): Promise<Product[]> {
+    return this.repo.find({
+      relations: this.baseRelations,
+      where: `Product.name ILIKE '%${term}%'`,
+    });
   }
 }

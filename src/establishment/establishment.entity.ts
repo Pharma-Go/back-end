@@ -1,6 +1,7 @@
 import { Address } from 'src/address/address.entity';
 import { Category } from 'src/category/category.entity';
 import { Review } from 'src/review/review.entity';
+import { User } from 'src/user/user.entity';
 import {
   Entity,
   Column,
@@ -55,4 +56,10 @@ export class Establishment extends BaseEntity<Establishment> {
     review => review.establishment,
   )
   reviews: Review[];
+
+  @ManyToMany(
+    () => User,
+    user => user.favoriteEstablishments,
+  )
+  favoriteUsers: User[];
 }
