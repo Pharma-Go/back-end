@@ -38,6 +38,7 @@ export class InvoiceService {
     }
 
     invoiceDto['total'] = 0;
+    invoiceDto['strictAccepted'] = true;
 
     for (let i = 0; i < invoiceDto.itemProducts.length; i++) {
       const product = await this.productService.getOne(
