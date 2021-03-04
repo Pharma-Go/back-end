@@ -12,8 +12,19 @@ export class Card extends BaseEntity<Card> {
 
   @Column({
     nullable: false,
+    enum: [PaymentMethod.CREDIT_CARD, PaymentMethod.CREDIT_CARD],
   })
   method: PaymentMethod;
+
+  @Column({
+    nullable: false,
+  })
+  firstDigits: string;
+
+  @Column({
+    nullable: false,
+  })
+  lastDigits: string;
 
   @ManyToOne(
     () => User,

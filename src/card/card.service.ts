@@ -29,6 +29,8 @@ export class CardService {
       card_id: pagarmeCard.id,
       method: cardDto.method,
       user: user.id,
+      firstDigits: pagarmeCard.first_digits,
+      lastDigits: pagarmeCard.last_digits,
     } as unknown) as Card);
 
     this.userService.updateUser(user.id, user);

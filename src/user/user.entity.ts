@@ -64,8 +64,8 @@ export class User extends BaseEntity<User> {
   cpf: string;
 
   @Column({
-    nullable: true,
-    default: false
+    nullable: false,
+    default: false,
   })
   isDark: boolean;
 
