@@ -6,6 +6,7 @@ import {
   Put,
   Param,
   BadRequestException,
+  Delete,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './user.entity';
@@ -49,6 +50,16 @@ export class UserController {
     @CurrentUser() user: User,
   ) {
     return this.service.changePassword(user, dto);
+  }
+
+  @Post('establishment/:id/favorite')
+  public addFavorite(@CurrentUser() user: User, @Param('id') id: string) {
+    return this.service.addFavorite(user.id, id);
+  }
+
+  @Delete('establishment/:id/favorite')
+  public removeFavorite(@CurrentUser() user: User, @Param('id') id: string) {
+    return this.service.removeFavorite(user.id, id);
   }
 
   @Get('')

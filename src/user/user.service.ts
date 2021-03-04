@@ -53,6 +53,7 @@ export class UserService {
 
   public async updateUser(id: string, user: DeepPartial<User>): Promise<User> {
     await this.repo.update(id, user);
+
     return this.getOne(id);
   }
 
@@ -115,5 +116,27 @@ export class UserService {
     }
 
     throw new BadRequestException('Não existe um usuário com este email.');
+  }
+
+  public async addFavorite(
+    userId: string,
+    establishmentId: string,
+  ): Promise<void> {
+    await this.repo.query(
+      `INSERT INTO public.user_favorite_establishments_establishment (user_id, establishment_id) VALUES ('${userId}', '${establishmentId}')`,
+    );
+
+    return;
+  }
+
+  public async removeFavorite(
+    userId: string,
+    establishmentId: string,
+  ): Promise<void> {
+    await this.repo.query(
+      `DELETE FROM public.user_favorite_establishments_establishment WHERE user_id = '${userId}' AND establishment_id = '${establishmentId}'`,
+    );
+
+    return;
   }
 }

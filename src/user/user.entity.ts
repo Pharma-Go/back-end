@@ -112,6 +112,9 @@ export class User extends BaseEntity<User> {
   @ManyToMany(
     () => Establishment,
     establishment => establishment.favoriteUsers,
+    {
+      cascade: true,
+    },
   )
   @JoinTable()
   favoriteEstablishments: Establishment[];
@@ -119,6 +122,9 @@ export class User extends BaseEntity<User> {
   @ManyToMany(
     () => Product,
     product => product.favoriteUsers,
+    {
+      cascade: true,
+    },
   )
   @JoinTable()
   favoriteProducts: Product[];
