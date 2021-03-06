@@ -192,7 +192,11 @@ export class InvoiceService {
     return this.getOne(id);
   }
 
-  public async getOne(id: string): Promise<Invoice> {
+  public async getOne(id: string, getBuyerAddress?: boolean): Promise<Invoice> {
+    if (getBuyerAddress) {
+      this.baseRelations.push('buyer.address');
+    }
+
     return this.repo.findOne(id, { relations: this.baseRelations });
   }
 
@@ -271,6 +275,7 @@ export class InvoiceService {
       .innerJoinAndSelect('invoice.itemProducts', 'products')
       .where('invoice.buyer = :id', { id: user.id })
       .orderBy('invoice.paymentDate', 'DESC')
+      .limit(3)
       .getMany();
   }
 }

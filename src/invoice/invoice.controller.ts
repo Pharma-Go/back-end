@@ -56,7 +56,7 @@ export class InvoiceController {
 
   @Get(':id')
   public getOne(@Param('id') id: string) {
-    return this.service.getOne(id);
+    return this.service.getOne(id, true);
   }
 
   @OAuthPublic()
