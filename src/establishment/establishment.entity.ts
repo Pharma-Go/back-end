@@ -45,6 +45,9 @@ export class Establishment extends BaseEntity<Establishment> {
   @OneToMany(
     () => Product,
     product => product.establishment,
+    {
+      cascade: true,
+    },
   )
   products: Product[];
 
@@ -61,6 +64,9 @@ export class Establishment extends BaseEntity<Establishment> {
   @ManyToOne(
     () => User,
     user => user.establishments,
+    {
+      cascade: true,
+    },
   )
   owner: User;
 

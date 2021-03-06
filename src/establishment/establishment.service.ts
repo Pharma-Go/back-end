@@ -3,6 +3,8 @@ import { Establishment } from './establishment.entity';
 import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EstablishmentDto } from './dto/establishment.dto';
+import { ProductService } from 'src/product/product.service';
+import { User } from 'src/user/user.entity';
 
 @Injectable()
 export class EstablishmentService {
@@ -12,11 +14,13 @@ export class EstablishmentService {
     'products.category',
     'products.establishment',
     'reviews',
+    'owner',
   ];
 
   constructor(
     @InjectRepository(Establishment)
     private repo: Repository<Establishment>,
+    private productService: ProductService,
   ) {}
 
   public async createEstablishment(
@@ -31,10 +35,38 @@ export class EstablishmentService {
 
   public async updateEstablishment(
     id: string,
-    user: DeepPartial<Establishment>,
+    establishmentDto: DeepPartial<Establishment>,
   ): Promise<Establishment> {
-    await this.repo.update(id, user);
+    await this.repo.update(id, establishmentDto);
     return this.getOne(id);
+  }
+
+  public async updateProducts(
+    establishmentId: string,
+    products: string[],
+    add: boolean = true,
+  ): Promise<Establishment> {
+    const establishment = await this.getOne(establishmentId);
+
+    for (const productId of products) {
+      const product = await this.productService.getOne(productId);
+
+      if (add) {
+        await this.repo
+          .createQueryBuilder('Establishment')
+          .relation('products')
+          .of(establishment)
+          .add(product);
+      } else {
+        await this.repo
+          .createQueryBuilder('Establishment')
+          .relation('products')
+          .of(establishment)
+          .remove(product);
+      }
+    }
+
+    return this.getOne(establishmentId);
   }
 
   public async getOne(id: string): Promise<Establishment> {
@@ -61,5 +93,14 @@ export class EstablishmentService {
         .leftJoinAndSelect('est.address', 'address')
         .getMany()
     ).slice(0, 3);
+  }
+
+  public async getMyEstablishments(user: User) {
+    return this.repo.find({
+      relations: this.baseRelations,
+      where: {
+        owner: user.id,
+      },
+    });
   }
 }

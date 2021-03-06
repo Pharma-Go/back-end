@@ -36,7 +36,7 @@ export class Product extends BaseEntity<Product> {
 
   @Column({
     nullable: false,
-    default: true
+    default: true,
   })
   strict: boolean;
 

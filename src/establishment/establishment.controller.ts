@@ -1,10 +1,22 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { EstablishmentService } from './establishment.service';
 import { Establishment } from './establishment.entity';
-import { OAuthActionsScope } from '../lib/decorators/oauth.decorator';
+import {
+  CurrentUser,
+  OAuthActionsScope,
+} from '../lib/decorators/oauth.decorator';
 import { ApiOAuth2, ApiTags } from '@nestjs/swagger';
 import { SanitizePipe } from 'src/lib/pipes/sanitize.pipe';
 import { EstablishmentDto } from './dto/establishment.dto';
+import { User } from 'src/user/user.entity';
 
 @ApiTags('Establishment')
 @Controller('establishment')
@@ -29,6 +41,22 @@ export class EstablishmentController {
     return this.service.createEstablishment(dto);
   }
 
+  @Post(':id/products')
+  public addProducts(
+    @Param('id') id: string,
+    @Body() dto: { products: string[] },
+  ) {
+    return this.service.updateProducts(id, dto.products);
+  }
+
+  @Delete(':id/products')
+  public removeProducts(
+    @Param('id') id: string,
+    @Body() dto: { products: string[] },
+  ) {
+    return this.service.updateProducts(id, dto.products, false);
+  }
+
   @Get()
   public getAll() {
     return this.service.getAll();
@@ -39,14 +67,19 @@ export class EstablishmentController {
     return this.service.getMostRated();
   }
 
+  @Get('my')
+  public getMyEstablishments(@CurrentUser() user: User) {
+    return this.service.getMyEstablishments(user);
+  }
+
   @Get(':id')
   public getOne(@Param('id') id: string) {
     return this.service.getOne(id);
   }
 
   @Put(':id')
-  public putOne(@Param('id') id: string, @Body() user: Establishment) {
-    return this.service.updateEstablishment(id, user);
+  public putOne(@Param('id') id: string, @Body() establishment: Establishment) {
+    return this.service.updateEstablishment(id, establishment);
   }
 
   @Get('search/:term')
