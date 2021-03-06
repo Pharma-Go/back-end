@@ -83,31 +83,28 @@ export class InvoiceService {
   }
 
   public async acceptedByPagarme(body: any) {
-    console.log('chego acceptedBypagarme');
-    setTimeout(async () => {
-      if (body.event === 'transaction_status_changed') {
-        if (
-          body.transaction &&
-          body.transaction.status &&
-          body.transaction.metadata &&
-          body.transaction.metadata.invoice_id
-        ) {
-          const invoiceId = body.transaction.metadata.invoice_id;
+    if (body.event === 'transaction_status_changed') {
+      if (
+        body.transaction &&
+        body.transaction.status &&
+        body.transaction.metadata &&
+        body.transaction.metadata.invoice_id
+      ) {
+        const invoiceId = body.transaction.metadata.invoice_id;
 
-          await this.repo.update(invoiceId, {
-            paymentStatus: body.transaction.status,
-            paymentDate: new Date(),
-          });
+        await this.repo.update(invoiceId, {
+          paymentStatus: body.transaction.status,
+          paymentDate: new Date(),
+        });
 
-          const invoice = await this.getInvoice(invoiceId);
+        const invoice = await this.getInvoice(invoiceId);
 
-          if (invoice.strictAccepted) {
-            this.invoiceGateway.server.emit('updateInvoice', invoice);
-            this.emitNewInvoice(invoice);
-          }
+        if (invoice.strictAccepted) {
+          this.invoiceGateway.server.emit('updateInvoice', invoice);
+          this.emitNewInvoice(invoice);
         }
       }
-    }, 5000);
+    }
   }
 
   public async emitNewInvoice(invoice: Invoice) {
@@ -244,6 +241,8 @@ export class InvoiceService {
     });
 
     const invoice = await this.getInvoice(id);
+
+    this.invoiceGateway.server.emit('strictAccept', invoice);
 
     if (invoice.paymentStatus === PaymentStatus.paid) {
       this.emitNewInvoice(invoice);
