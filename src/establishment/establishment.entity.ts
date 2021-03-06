@@ -10,6 +10,7 @@ import {
   JoinColumn,
   ManyToMany,
   JoinTable,
+  ManyToOne,
 } from 'typeorm';
 import { BaseEntity } from '../base-entity';
 import { Product } from '../product/product.entity';
@@ -56,6 +57,12 @@ export class Establishment extends BaseEntity<Establishment> {
     review => review.establishment,
   )
   reviews: Review[];
+
+  @ManyToOne(
+    () => User,
+    user => user.establishments,
+  )
+  owner: User;
 
   @ManyToMany(
     () => User,

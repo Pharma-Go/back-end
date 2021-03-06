@@ -115,6 +115,12 @@ export class User extends BaseEntity<User> {
   )
   reviews: Review[];
 
+  @OneToMany(
+    () => Establishment,
+    establishment => establishment.owner,
+  )
+  establishments: Review[];
+
   @ManyToMany(
     () => Establishment,
     establishment => establishment.favoriteUsers,

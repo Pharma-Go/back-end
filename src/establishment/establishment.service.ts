@@ -10,6 +10,7 @@ export class EstablishmentService {
     'address',
     'products',
     'products.category',
+    'products.establishment',
     'reviews',
   ];
 
