@@ -46,7 +46,7 @@ export class EstablishmentService {
 
   public searchEstablishment(term: string): Promise<Establishment[]> {
     return this.repo.find({
-      relations: ['products', 'address'],
+      relations: this.baseRelations,
       where: `Establishment.name ILIKE '%${term}%'`,
     });
   }

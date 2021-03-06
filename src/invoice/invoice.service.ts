@@ -265,7 +265,7 @@ export class InvoiceService {
   public async getRecentInvoices(user: User): Promise<Invoice[]> {
     return this.repo
       .createQueryBuilder('invoice')
-      .innerJoinAndSelect('invoice.products', 'products')
+      .innerJoinAndSelect('invoice.itemProducts', 'products')
       .where('invoice.buyer = :id', { id: user.id })
       .orderBy('invoice.paymentDate', 'DESC')
       .getMany();
