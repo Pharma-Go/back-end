@@ -100,6 +100,7 @@ export class InvoiceService {
         const invoice = await this.getInvoice(invoiceId);
 
         if (invoice.strictAccepted) {
+          this.invoiceGateway.server.emit('updateInvoice', invoice);
           this.emitNewInvoice(invoice);
         }
       }
