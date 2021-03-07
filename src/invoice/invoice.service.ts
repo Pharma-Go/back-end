@@ -93,16 +93,22 @@ export class InvoiceService {
       ) {
         const invoiceId = body.transaction.metadata.invoice_id;
 
-        await this.repo.update(invoiceId, {
-          paymentStatus: body.transaction.status,
-          paymentDate: new Date(),
-        });
+        if (invoiceId) {
+          try {
+            await this.repo.update(invoiceId, {
+              paymentStatus: body.transaction.status,
+              paymentDate: new Date(),
+            });
 
-        const invoice = await this.getInvoice(invoiceId);
+            const invoice = await this.getInvoice(invoiceId);
 
-        if (invoice.strictAccepted) {
-          this.invoiceGateway.server.emit('updateInvoice', invoice);
-          this.emitNewInvoice(invoice);
+            if (invoice.strictAccepted) {
+              this.invoiceGateway.server.emit('updateInvoice', invoice);
+              this.emitNewInvoice(invoice);
+            }
+          } catch (err) {
+            throw new BadRequestException(err);
+          }
         }
       }
     }
@@ -286,5 +292,12 @@ export class InvoiceService {
       .orderBy('invoice.paymentDate', 'DESC')
       .limit(3)
       .getMany();
+  }
+
+  public sendDelivererLocation(invoiceId: string) {
+    this.invoiceGateway.server.emit('gpsToClient', {
+      invoiceId,
+      lngLat: [-46.627628803253174, -23.614166392779463],
+    });
   }
 }

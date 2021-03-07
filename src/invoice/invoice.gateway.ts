@@ -16,7 +16,10 @@ export class InvoiceGateway
   private logger: Logger = new Logger('InvoiceGateway');
 
   @SubscribeMessage('gpsToServer')
-  handleMessage(client: Socket, payload: string): void {
+  handleMessage(
+    client: Socket,
+    payload: { lngLat: number[]; invoiceId: string },
+  ): void {
     this.server.emit('gpsToClient', payload);
   }
 

@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -47,6 +48,11 @@ export class InvoiceController {
   @Get()
   public getAll() {
     return this.service.getAll();
+  }
+
+  @Post('/:id/sendDelivererLocation')
+  public sendDelivererLocation(@Param('id') id: string) {
+    return this.service.sendDelivererLocation(id);
   }
 
   @Get('recent')
