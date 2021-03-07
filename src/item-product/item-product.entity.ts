@@ -9,6 +9,11 @@ export class ItemProduct extends BaseEntity<ItemProduct> {
     nullable: false,
   })
   public price: number;
+  
+  @Column({
+    nullable: false,
+  })
+  public quantity: number;
 
   @ManyToOne(
     () => Product,

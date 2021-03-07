@@ -1,4 +1,5 @@
 import { BaseEntity } from 'src/base-entity';
+import { Card } from 'src/card/card.entity';
 import { ItemProduct } from 'src/item-product/item-product.entity';
 import { User } from 'src/user/user.entity';
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
@@ -33,12 +34,6 @@ export class Invoice extends BaseEntity<Invoice> {
     default: PaymentStatus.pending,
   })
   paymentStatus: PaymentStatus;
-
-  @Column({
-    nullable: false,
-    enum: ['CREDIT_CARD', 'DEBIT_CARD'],
-  })
-  paymentMethod: PaymentMethod;
 
   @Column({
     nullable: true,
@@ -84,4 +79,10 @@ export class Invoice extends BaseEntity<Invoice> {
     user => user.deliveries,
   )
   deliverer: User;
+
+  @ManyToOne(
+    () => Card,
+    card => card.invoices,
+  )
+  paymentCard: Card;
 }

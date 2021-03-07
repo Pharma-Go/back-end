@@ -24,7 +24,7 @@ export class InvoiceDto {
 
   @IsString()
   @Expose()
-  cardId: string;
+  paymentCard: string;
 
   @IsEnum(PaymentMethod)
   @Expose()

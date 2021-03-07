@@ -16,6 +16,7 @@ export class InvoiceService {
     'itemProducts',
     'deliverer',
     'itemProducts.product',
+    'paymentCard',
   ];
 
   constructor(
@@ -119,7 +120,7 @@ export class InvoiceService {
     try {
       return App.client.transactions.create({
         amount: invoiceDto.total,
-        card_id: invoiceDto.cardId,
+        card_id: invoice.paymentCard.card_id,
         customer: {
           external_id: user.id,
           name: user.name,
@@ -138,7 +139,7 @@ export class InvoiceService {
         async: false,
         postback_url:
           'http://pharmago-backend.herokuapp.com/invoices/pagarme/accept',
-        payment_method: 'credit_card',
+        payment_method: invoice.paymentCard.method.toLowerCase(),
         billing: {
           name: 'Local de entrega',
           address: {
@@ -193,11 +194,13 @@ export class InvoiceService {
   }
 
   public async getOne(id: string, getBuyerAddress?: boolean): Promise<Invoice> {
+    let relations = [...this.baseRelations];
+
     if (getBuyerAddress) {
-      this.baseRelations.push('buyer.address');
+      relations = [...this.baseRelations, 'buyer.address'];
     }
 
-    return this.repo.findOne(id, { relations: this.baseRelations });
+    return this.repo.findOne(id, { relations });
   }
 
   public async getAll(): Promise<Invoice[]> {
@@ -225,10 +228,16 @@ export class InvoiceService {
       );
     }
 
-    await this.repo.update(id, {
-      deliverer: user,
-      delivererAccepted: true,
-    });
+    try {
+      await this.repo.update(id, {
+        deliverer: user,
+        delivererAccepted: true,
+      });
+    } catch (err) {
+      throw new BadRequestException(err);
+    }
+
+    this.invoiceGateway.server.emit('delivererAccept', id);
 
     return this.getInvoice(id);
   }

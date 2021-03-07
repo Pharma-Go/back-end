@@ -1,8 +1,12 @@
 import { BaseEntity } from 'src/base-entity';
-import { PaymentMethod } from 'src/invoice/invoice.entity';
+import { Invoice } from 'src/invoice/invoice.entity';
 import { User } from 'src/user/user.entity';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 
+enum PaymentMethod {
+  CREDIT_CARD = 'CREDIT_CARD',
+  DEBIT_CARD = 'DEBIT_CARD',
+}
 @Entity()
 export class Card extends BaseEntity<Card> {
   @Column({
@@ -12,7 +16,7 @@ export class Card extends BaseEntity<Card> {
 
   @Column({
     nullable: false,
-    enum: [PaymentMethod.CREDIT_CARD, PaymentMethod.CREDIT_CARD],
+    enum: [PaymentMethod.CREDIT_CARD, PaymentMethod.DEBIT_CARD],
   })
   method: PaymentMethod;
 
@@ -31,4 +35,10 @@ export class Card extends BaseEntity<Card> {
     user => user.cards,
   )
   user: User;
+
+  @OneToMany(
+    () => Invoice,
+    invoice => invoice.paymentCard,
+  )
+  invoices: Invoice[];
 }
