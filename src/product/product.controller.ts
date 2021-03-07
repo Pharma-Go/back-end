@@ -43,8 +43,6 @@ export class ProductController {
 
   @Post()
   async createOne(@Body(new SanitizePipe(ProductDto)) dto: ProductDto) {
-    dto.originalPrice = dto.price;
-
     return await this.service.createProduct(dto);
   }
 
