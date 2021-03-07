@@ -41,6 +41,16 @@ export class Address extends BaseEntity<Address> {
   zipcode: string;
 
   @Column({
+    nullable: false,
+  })
+  lat: string;
+
+  @Column({
+    nullable: false,
+  })
+  lon: string;
+
+  @Column({
     nullable: true,
   })
   reference: string;

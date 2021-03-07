@@ -2477,6 +2477,11 @@ cookiejar@^2.1.0, cookiejar@^2.1.2:
   resolved "https://registry.yarnpkg.com/cookiejar/-/cookiejar-2.1.2.tgz#dd8a235530752f988f9a0844f3fc589e3111125c"
   integrity sha512-Mw+adcfzPxcPeI+0WlvRrr/3lGVO0bD75SxX6811cxSh1Wbxx7xZBGK1eVtDf6si8rg2lhnUjsVLMFMfbRIuwA==
 
+coordenadas-do-cep@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/coordenadas-do-cep/-/coordenadas-do-cep-1.2.0.tgz#bbbc3444e3f9d4e8662bab2b41836c7e95522086"
+  integrity sha512-YcmgNl+OneJxrRj7lc+hD8w3w1y3Puqbv5L5Z86mBTIN0+j8U4UL6v3FbAlvyFCnDQNVFWbslhacy39/yNVDcg==
+
 copy-descriptor@^0.1.0:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/copy-descriptor/-/copy-descriptor-0.1.1.tgz#676f6eb3c39997c2ee1ac3a924fd6124748f578d"

@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { OAuthActionsScope } from 'src/lib/decorators/oauth.decorator';
 import { SanitizePipe } from 'src/lib/pipes/sanitize.pipe';
@@ -29,5 +29,10 @@ export class AddressController {
   @Put(':id')
   public updateAddress(@Param('id') id: string, @Body() address: Address) {
     return this.addressService.updateAddress(id, address);
+  }
+
+  @Get(':cep')
+  public getCep(@Param('cep') cep: string) {
+    return this.addressService.getCep(cep);
   }
 }

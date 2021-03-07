@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AddressDto } from './address.dto';
 import { Address } from './address.entity';
+import * as CeepCoords from 'coordenadas-do-cep';
 
 @Injectable()
 export class AddressService {
@@ -28,5 +29,9 @@ export class AddressService {
     return this.repo.findOne(address.id, {
       relations: ['user', 'establishment'],
     });
+  }
+
+  public async getCep(cep: string) {
+    return CeepCoords.getByCep(cep);
   }
 }

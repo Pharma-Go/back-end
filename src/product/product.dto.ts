@@ -14,18 +14,17 @@ export class ProductDto {
   @Expose()
   price: number;
 
-  @Expose()
-  originalPrice: number;
-
   @IsBoolean()
   @Expose()
   available: boolean;
 
   imageUrl?: string;
 
+  @IsString({ always: true })
   @Expose()
   category: string;
 
+  @IsString({ always: true })
   @Expose()
   establishment: string;
 }

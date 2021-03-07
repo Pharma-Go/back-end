@@ -30,6 +30,14 @@ export class AddressDto {
   @Expose()
   zipcode: string;
 
+  @IsNumber()
+  @Expose()
+  lat: string;
+
+  @IsNumber()
+  @Expose()
+  lon: string;
+
   @Expose()
   reference: string;
 
