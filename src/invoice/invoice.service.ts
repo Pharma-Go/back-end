@@ -69,6 +69,7 @@ export class InvoiceService {
     }
 
     invoiceDto['total'] = invoiceDto['total'] - invoiceDto.discount;
+    console.log(invoiceDto);
 
     try {
       const generatedInvoice = await this.repo.save(invoiceDto as unknown);
@@ -142,7 +143,7 @@ export class InvoiceService {
           phone_numbers: [`+55${user.phone}`],
         },
         capture: true,
-        async: false,
+        async: true,
         postback_url:
           'http://pharmago-backend.herokuapp.com/invoices/pagarme/accept',
         payment_method: invoice.paymentCard.method.toLowerCase(),

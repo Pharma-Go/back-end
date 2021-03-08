@@ -12,6 +12,10 @@ export class EstablishmentDto {
 
   @IsString({ always: true })
   @Expose()
+  public owner: string;
+
+  @IsString({ always: true })
+  @Expose()
   public opensAt: string;
 
   @IsString({ always: true })

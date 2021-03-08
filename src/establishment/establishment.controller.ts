@@ -49,6 +49,11 @@ export class EstablishmentController {
     return this.service.updateProducts(id, dto.products);
   }
 
+  @Delete(':id')
+  public removeEstablishment(@Param('id') id: string) {
+    return this.service.removeEstablishment(id);
+  }
+
   @Delete(':id/products')
   public removeProducts(
     @Param('id') id: string,

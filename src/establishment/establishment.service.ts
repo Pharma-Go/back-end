@@ -103,4 +103,8 @@ export class EstablishmentService {
       },
     });
   }
+
+  public async removeEstablishment(id: string) {
+    return this.repo.delete(id);
+  }
 }
