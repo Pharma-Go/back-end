@@ -16,7 +16,8 @@ export class ProductService {
   constructor(
     @InjectRepository(Product)
     private repo: Repository<Product>,
-  ) {}
+  ) {
+  }
 
   public async createProduct(dto: ProductDto): Promise<Product> {
     if (!dto.establishment) {
@@ -88,5 +89,9 @@ export class ProductService {
       relations: this.baseRelations,
       where: `Product.name ILIKE '%${term}%'`,
     });
+  }
+
+  public async deleteOne(id: string): Promise<void> {
+    await this.repo.delete(id);
   }
 }

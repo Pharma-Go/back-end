@@ -6,10 +6,15 @@ import { Column, Entity, ManyToMany, ManyToOne } from 'typeorm';
 @Entity()
 export class ItemProduct extends BaseEntity<ItemProduct> {
   @Column({
+    nullable: true,
+  })
+  public prescriptionUrl?: string;
+
+  @Column({
     nullable: false,
   })
   public price: number;
-  
+
   @Column({
     nullable: false,
   })

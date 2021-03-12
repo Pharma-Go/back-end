@@ -16,6 +16,10 @@ export class ProductDto {
 
   @IsBoolean()
   @Expose()
+  strict: boolean;
+
+  @IsBoolean()
+  @Expose()
   available: boolean;
 
   imageUrl?: string;

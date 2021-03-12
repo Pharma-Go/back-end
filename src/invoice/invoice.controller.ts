@@ -71,14 +71,18 @@ export class InvoiceController {
     this.service.acceptedByPagarme(body);
   }
 
-  @Put('strict/:id/accept')
-  public strictAccept(@Param('id') id: string, @CurrentUser() user: User) {
-    return this.service.strictAccept(id, user);
+  @Put('strict/:id')
+  public strictAccept(
+    @Param('id') id: string,
+    @Body() body: { accept: boolean },
+    @CurrentUser() user: User,
+  ) {
+    return this.service.strictUpdate(id, body, user);
   }
 
   @Put('deliverer/:id/accept')
   public acceptInvoice(@Param('id') id: string, @CurrentUser() user: User) {
-    return this.service.acceptInvoice(id, user);
+    return this.service.delivererAccept(id, user);
   }
 
   @Put('/:id/delivered')

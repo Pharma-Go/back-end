@@ -220,7 +220,7 @@ export class InvoiceService {
     });
   }
 
-  public async acceptInvoice(id: string, user: User): Promise<Invoice> {
+  public async delivererAccept(id: string, user: User): Promise<Invoice> {
     if (user.role === Role.DEFAULT) {
       throw new BadRequestException(
         'Não é possível aceitar um pedido sem ser um entregador.',
@@ -249,7 +249,11 @@ export class InvoiceService {
     return this.getInvoice(id);
   }
 
-  public async strictAccept(id: string, user: User): Promise<Invoice> {
+  public async strictUpdate(
+    id: string,
+    body: { accept: boolean },
+    user: User,
+  ): Promise<Invoice> {
     if (user.role !== Role.ADMIN) {
       throw new BadRequestException(
         'Não é possível aceitar um pedido sem ser um admin.',
@@ -257,7 +261,7 @@ export class InvoiceService {
     }
 
     await this.repo.update(id, {
-      strictAccepted: true,
+      strictAccepted: body.accept,
     });
 
     const invoice = await this.getInvoice(id);

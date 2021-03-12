@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { OAuthActionsScope } from 'src/lib/decorators/oauth.decorator';
 import { SanitizePipe } from 'src/lib/pipes/sanitize.pipe';
@@ -49,5 +49,10 @@ export class ProductController {
   @Put(':id')
   async putOne(@Param('id') id: string, @Body() product: Product) {
     return await this.service.updateProduct(id, product);
+  }
+
+  @Delete(':id')
+  async deleteOne(@Param('id') id: string) {
+    return await this.service.deleteOne(id);
   }
 }
