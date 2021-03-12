@@ -1,5 +1,6 @@
 import { Address } from 'src/address/address.entity';
 import { Category } from 'src/category/category.entity';
+import { Invoice } from 'src/invoice/invoice.entity';
 import { Review } from 'src/review/review.entity';
 import { User } from 'src/user/user.entity';
 import {
@@ -75,4 +76,13 @@ export class Establishment extends BaseEntity<Establishment> {
     user => user.favoriteEstablishments,
   )
   favoriteUsers: User[];
+
+  @OneToMany(
+    () => Invoice,
+    invoice => invoice.establishment,
+    {
+      cascade: true,
+    },
+  )
+  invoices: Invoice[];
 }

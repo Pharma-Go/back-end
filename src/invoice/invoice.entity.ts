@@ -1,5 +1,6 @@
 import { BaseEntity } from 'src/base-entity';
 import { Card } from 'src/card/card.entity';
+import { Establishment } from 'src/establishment/establishment.entity';
 import { ItemProduct } from 'src/item-product/item-product.entity';
 import { User } from 'src/user/user.entity';
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
@@ -85,4 +86,10 @@ export class Invoice extends BaseEntity<Invoice> {
     card => card.invoices,
   )
   paymentCard: Card;
+
+  @ManyToOne(
+    () => Establishment,
+    establishment => establishment.invoices,
+  )
+  establishment: Establishment;
 }

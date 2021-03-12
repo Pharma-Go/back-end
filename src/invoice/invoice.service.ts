@@ -17,6 +17,7 @@ export class InvoiceService {
     'deliverer',
     'itemProducts.product',
     'paymentCard',
+    'establishment',
   ];
 
   constructor(
@@ -324,5 +325,21 @@ export class InvoiceService {
         created_at: 'DESC',
       },
     });
+  }
+
+  public getInvoicesStricteds(user: User) {
+    if (user.role !== Role.ADMIN) {
+      throw new BadRequestException(
+        'Não é possível listar os pedidos restritos sem ser um administrador.',
+      );
+    }
+
+    return this.repo
+      .createQueryBuilder('invoice')
+      .innerJoinAndSelect('invoice.establishment', 'establishment')
+      .innerJoinAndSelect('establishment.owner', 'owner')
+      .where('establishment.owner = :id', { id: user.id })
+      .orderBy('invoice.created_at', 'ASC')
+      .getMany();
   }
 }

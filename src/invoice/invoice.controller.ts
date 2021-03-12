@@ -65,6 +65,11 @@ export class InvoiceController {
     return this.service.getAvailableOrders(user);
   }
 
+  @Get('stricteds')
+  public getInvoicesStricteds(@CurrentUser() user: User) {
+    return this.service.getInvoicesStricteds(user);
+  }
+
   @Get(':id')
   public getOne(@Param('id') id: string) {
     return this.service.getOne(id, true);
