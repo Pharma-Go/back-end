@@ -103,11 +103,8 @@ export class InvoiceService {
 
             const invoice = await this.getInvoice(invoiceId);
 
-            console.log(invoice.strictAccepted);
-
             if (invoice.strictAccepted) {
               this.invoiceGateway.server.emit('updateInvoice', invoice);
-              console.log('emitiu');
               this.emitNewInvoice(invoice);
             }
           } catch (err) {
@@ -306,6 +303,26 @@ export class InvoiceService {
     this.invoiceGateway.server.emit('gpsToClient', {
       invoiceId,
       lngLat: [-46.627628803253174, -23.614166392779463],
+    });
+  }
+
+  public getAvailableOrders(user: User) {
+    if (user.role === Role.DEFAULT) {
+      throw new BadRequestException(
+        'Não é possível listar os pedidos disponíveis para entrega sem ser um motoboy.',
+      );
+    }
+
+    return this.repo.find({
+      relations: this.baseRelations,
+      where: {
+        delivererAccepted: false,
+        paymentStatus: PaymentStatus.paid,
+        strictAccepted: true,
+      },
+      order: {
+        created_at: 'DESC',
+      },
     });
   }
 }

@@ -60,6 +60,11 @@ export class InvoiceController {
     return this.service.getRecentInvoices(user);
   }
 
+  @Get('available/orders')
+  public getAvailableOrders(@CurrentUser() user: User) {
+    return this.service.getAvailableOrders(user);
+  }
+
   @Get(':id')
   public getOne(@Param('id') id: string) {
     return this.service.getOne(id, true);
