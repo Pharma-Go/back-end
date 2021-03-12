@@ -103,8 +103,11 @@ export class InvoiceService {
 
             const invoice = await this.getInvoice(invoiceId);
 
+            console.log(invoice.strictAccepted);
+
             if (invoice.strictAccepted) {
               this.invoiceGateway.server.emit('updateInvoice', invoice);
+              console.log('emitiu');
               this.emitNewInvoice(invoice);
             }
           } catch (err) {
@@ -116,7 +119,7 @@ export class InvoiceService {
   }
 
   public async emitNewInvoice(invoice: Invoice) {
-    this.invoiceGateway.server.emit('newInvoice', invoice);
+    this.invoiceGateway.server.emit('newInvoice', invoice.id);
   }
 
   public async createInvoiceInPagarme(
