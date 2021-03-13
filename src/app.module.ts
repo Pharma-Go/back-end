@@ -21,6 +21,7 @@ import { MediaModule } from './media/media.module';
 import { MailModule } from './mail/mail.module';
 import { BffModule } from './bff/bff.module';
 import { ItemProductModule } from './item-product/item-product.module';
+import { CodeModule } from './code/code.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { ItemProductModule } from './item-product/item-product.module';
     MailModule,
     BffModule,
     ItemProductModule,
+    CodeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

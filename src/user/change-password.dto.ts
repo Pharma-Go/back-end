@@ -14,3 +14,13 @@ export class ChangePasswordDto {
   @Expose()
   repeatedNewPassword: string;
 }
+
+export class ChangeRecoverPasswordDto {
+  @IsString({ always: true })
+  @Expose()
+  code: string;
+
+  @IsString({ always: true })
+  @Expose()
+  password: string;
+}

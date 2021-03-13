@@ -339,7 +339,10 @@ export class InvoiceService {
       .innerJoinAndSelect('invoice.establishment', 'establishment')
       .innerJoinAndSelect('invoice.itemProducts', 'itemProducts')
       .innerJoinAndSelect('establishment.owner', 'owner')
-      .where('establishment.owner = :id', { id: user.id })
+      .where(
+        'establishment.owner = :id AND invoice.strictAccepted = :strictAccept',
+        { id: user.id, strictAccept: false },
+      )
       .orderBy('invoice.created_at', 'ASC')
       .getMany();
   }

@@ -5,9 +5,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as BCrypt from 'bcrypt';
 import { classToPlain } from 'class-transformer';
 import { UserDto } from './user.dto';
-import { ChangePasswordDto } from './change-password.dto';
+import {
+  ChangePasswordDto,
+  ChangeRecoverPasswordDto,
+} from './change-password.dto';
 import { BCryptTransformer } from 'src/lib/bcrypt';
 import { MailerService } from '@nestjs-modules/mailer';
+import { CodeService } from 'src/code/code.service';
+import { Code } from 'src/code/code.entity';
 @Injectable()
 export class UserService {
   public baseRelations: string[];
@@ -16,6 +21,7 @@ export class UserService {
     @InjectRepository(User)
     private repo: Repository<User>,
     private mailerService: MailerService,
+    private codeService: CodeService,
   ) {
     this.baseRelations = userBaseRelations;
   }
@@ -98,19 +104,61 @@ export class UserService {
     return this.getOne(user.id);
   }
 
-  public async recoverPassword(email: string) {
+  public async changeRecoverPassword(
+    email: string,
+    dto: ChangeRecoverPasswordDto,
+  ) {
+    const code: Code = await this.codeService.getCode(dto.code);
+
+    if (!code) {
+      throw new BadRequestException('Não existe este código.');
+    }
+
+    if (this.codeService.compareTime(new Date(), code.expirationDate)) {
+      throw new BadRequestException('Código já está expirado.');
+    }
+
+    try {
+      const user = await this.repo.findOne({
+        where: {
+          email,
+        },
+      });
+
+      await this.repo.update(user.id, {
+        password: dto.password,
+      });
+
+      await this.codeService.deleteCode(code.id);
+
+      return this.getOne(user.id);
+    } catch (err) {
+      throw new BadRequestException(err);
+    }
+  }
+
+  public async requestRecoverPassword(email: string) {
     if (
       await this.repo
         .createQueryBuilder()
         .where('email = :email', { email })
         .getOne()
     ) {
-      await this.mailerService.sendMail({
-        to: email,
-        from: 'noreply.pharmago@gmail.com',
-        subject: 'Recuperação de senha',
-        template: 'index',
-      });
+      try {
+        const code = await this.codeService.create(email);
+
+        await this.mailerService.sendMail({
+          to: email,
+          from: 'noreply.pharmago@gmail.com',
+          subject: 'Recuperação de senha',
+          template: 'index',
+          context: {
+            code: code.code,
+          },
+        });
+      } catch (err) {
+        throw new BadRequestException(err);
+      }
 
       return;
     }

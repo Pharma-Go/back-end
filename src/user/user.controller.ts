@@ -20,7 +20,10 @@ import { SanitizePipe } from '../lib/pipes/sanitize.pipe';
 import { UserDto } from './user.dto';
 import { CardDto } from 'src/card/card.dto';
 import { PagarmeCard } from 'src/card/card.model';
-import { ChangePasswordDto } from './change-password.dto';
+import {
+  ChangePasswordDto,
+  ChangeRecoverPasswordDto,
+} from './change-password.dto';
 
 @ApiTags('Users')
 @Controller('users')
@@ -37,6 +40,22 @@ import { ChangePasswordDto } from './change-password.dto';
 })
 export class UserController {
   constructor(public readonly service: UserService) {}
+
+  @OAuthPublic()
+  @Post('requestRecoverPassword/:email')
+  public requestRecoverPassword(@Param('email') email: string) {
+    return this.service.requestRecoverPassword(email);
+  }
+
+  @OAuthPublic()
+  @Post('changeRecoverPassword/:email')
+  public changeRecoverPassword(
+    @Param('email') email: string,
+    @Body(new SanitizePipe(ChangeRecoverPasswordDto))
+    dto: ChangeRecoverPasswordDto,
+  ) {
+    return this.service.changeRecoverPassword(email, dto);
+  }
 
   @OAuthPublic()
   @Post()
@@ -65,12 +84,6 @@ export class UserController {
   @Get('')
   public getAll() {
     return this.service.getAll();
-  }
-
-  @OAuthPublic()
-  @Get('recoverPassword/:email')
-  public recoverPassword(@Param('email') email: string) {
-    return this.service.recoverPassword(email);
   }
 
   @Get('availableDeliverers')
