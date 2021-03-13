@@ -337,6 +337,7 @@ export class InvoiceService {
     return this.repo
       .createQueryBuilder('invoice')
       .innerJoinAndSelect('invoice.establishment', 'establishment')
+      .innerJoinAndSelect('invoice.itemProducts', 'itemProducts')
       .innerJoinAndSelect('establishment.owner', 'owner')
       .where('establishment.owner = :id', { id: user.id })
       .orderBy('invoice.created_at', 'ASC')
