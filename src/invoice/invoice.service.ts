@@ -266,6 +266,8 @@ export class InvoiceService {
       ) {
         const invoiceId = body.transaction.metadata.invoice_id;
 
+        console.log(invoiceId, body.transaction.status);
+
         if (invoiceId) {
           try {
             switch (body.transaction.status) {
@@ -274,6 +276,8 @@ export class InvoiceService {
                   paymentStatus: body.transaction.status,
                   paymentDate: new Date(),
                 });
+
+                console.log('finalizou o pagamento');
                 break;
               case PaymentStatus.refunded:
                 const invoice = await this.getInvoice(invoiceId);
@@ -290,6 +294,8 @@ export class InvoiceService {
                   isFee: true,
                   refunded: new Date(),
                 });
+
+                console.log('finalizou a taxa');
 
                 break;
               default:
