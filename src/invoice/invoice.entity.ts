@@ -14,6 +14,7 @@ export enum PaymentStatus {
   paid = 'paid',
   refused = 'refused',
   pending = 'pending',
+  refunded = 'refunded',
 }
 
 @Entity()
@@ -31,7 +32,12 @@ export class Invoice extends BaseEntity<Invoice> {
 
   @Column({
     nullable: true,
-    enum: ['PENDING', 'REFUSED', 'PAID'],
+    enum: [
+      PaymentStatus.paid,
+      PaymentStatus.pending,
+      PaymentStatus.refunded,
+      PaymentStatus.refused,
+    ],
     default: PaymentStatus.pending,
   })
   paymentStatus: PaymentStatus;
@@ -39,7 +45,28 @@ export class Invoice extends BaseEntity<Invoice> {
   @Column({
     nullable: true,
   })
+  refunded: Date;
+
+  @Column({
+    nullable: true,
+  })
   paymentDate: Date;
+
+  @Column({
+    nullable: true,
+    default: false,
+  })
+  isFee: boolean;
+
+  @Column({
+    nullable: true,
+  })
+  feeAmount: number;
+
+  @Column({
+    nullable: true,
+  })
+  transactionId: number;
 
   @Column({
     nullable: false,

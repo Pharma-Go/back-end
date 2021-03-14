@@ -43,11 +43,18 @@ export class Establishment extends BaseEntity<Establishment> {
   })
   closesAt: string;
 
+  @Column({
+    nullable: true,
+    default: 5,
+  })
+  fee: number;
+
   @OneToMany(
     () => Product,
     product => product.establishment,
     {
       cascade: true,
+      onDelete: 'CASCADE',
     },
   )
   products: Product[];

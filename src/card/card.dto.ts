@@ -1,5 +1,6 @@
 import { Expose } from 'class-transformer';
-import { IsString } from 'class-validator';
+import { IsEnum, IsString } from 'class-validator';
+import { PaymentMethod } from 'src/invoice/invoice.entity';
 
 export class CardDto {
   @IsString({ always: true })
@@ -18,7 +19,7 @@ export class CardDto {
   @Expose()
   card_cvv: string;
 
-  @IsString({ always: true })
+  @IsEnum(PaymentMethod)
   @Expose()
   method: string;
 }

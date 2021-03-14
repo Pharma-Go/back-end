@@ -15,10 +15,6 @@ export class InvoiceDto {
     prescriptionUrl?: string;
   }[];
 
-  @IsString()
-  @Expose()
-  buyer: string;
-
   @Expose()
   deliverer: string;
 
@@ -33,4 +29,8 @@ export class InvoiceDto {
   @IsEnum(PaymentMethod)
   @Expose()
   paymentMethod: PaymentMethod;
+
+  public total: number;
+  public buyer: string;
+  public strictAccepted: boolean;
 }

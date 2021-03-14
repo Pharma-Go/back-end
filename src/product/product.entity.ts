@@ -49,6 +49,9 @@ export class Product extends BaseEntity<Product> {
   @ManyToOne(
     () => Establishment,
     establishment => establishment.products,
+    {
+      onDelete: 'CASCADE',
+    },
   )
   establishment: Establishment;
 

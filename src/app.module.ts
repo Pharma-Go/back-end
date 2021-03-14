@@ -22,6 +22,7 @@ import { MailModule } from './mail/mail.module';
 import { BffModule } from './bff/bff.module';
 import { ItemProductModule } from './item-product/item-product.module';
 import { CodeModule } from './code/code.module';
+import { PagarmeModule } from './pagarme/pagarme.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { CodeModule } from './code/code.module';
     BffModule,
     ItemProductModule,
     CodeModule,
+    PagarmeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -20,6 +20,7 @@ import { InvoiceService } from './invoice.service';
 import { SanitizePipe } from 'src/lib/pipes/sanitize.pipe';
 import { InvoiceDto } from './invoice.dto';
 import { User } from 'src/user/user.entity';
+import { PagarmeService } from 'src/pagarme/pagarme.service';
 
 @ApiTags('Invoice')
 @Controller('invoices')
@@ -78,7 +79,12 @@ export class InvoiceController {
   @OAuthPublic()
   @Post('pagarme/accept')
   public acceptByPagarme(@Body() body: any) {
-    this.service.acceptedByPagarme(body);
+    return this.service.postback(body);
+  }
+
+  @Post('pagarme/:id/refund')
+  public refundTransaction(@Param('id') id: string) {
+    return this.service.refundTransaction(id);
   }
 
   @Put('strict/:id')
