@@ -77,7 +77,7 @@ export class InvoiceController {
   }
 
   @OAuthPublic()
-  @Post('pagarme/accept')
+  @Post('pagarme/postback')
   public acceptByPagarme(@Body() body: any) {
     return this.service.postback(body);
   }
