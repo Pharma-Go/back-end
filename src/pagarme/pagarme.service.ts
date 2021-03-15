@@ -111,6 +111,7 @@ export class PagarmeService {
         },
       });
     } catch (err) {
+      console.log('erro fee', err);
       throw new BadRequestException(err.response.errors[0].message);
     }
   }
