@@ -272,10 +272,14 @@ export class InvoiceService {
           try {
             switch (body.transaction.status) {
               case PaymentStatus.paid:
-                await this.repo.update(invoiceId, {
-                  paymentStatus: body.transaction.status,
-                  paymentDate: new Date(),
-                });
+                const inv = await this.getInvoice(invoiceId);
+
+                if (!inv.isFee) {
+                  await this.repo.update(invoiceId, {
+                    paymentStatus: body.transaction.status,
+                    paymentDate: new Date(),
+                  });
+                }
 
                 console.log('finalizou o pagamento');
                 break;
