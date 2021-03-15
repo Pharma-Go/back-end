@@ -70,9 +70,11 @@ export class PagarmeService {
   public async createFeeInvoice(invoice: Invoice, user: User) {
     const feeAmount = invoice.establishment.fee;
 
+    const total = (feeAmount / 100) * invoice.total;
+
     try {
       return App.client.transactions.create({
-        amount: (feeAmount / 100) * invoice.total,
+        amount: total <= 100 ? 110 : total,
         card_id: invoice.paymentCard.card_id,
         customer: {
           external_id: user.id,

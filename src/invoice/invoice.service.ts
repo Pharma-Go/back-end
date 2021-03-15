@@ -266,8 +266,6 @@ export class InvoiceService {
       ) {
         const invoiceId = body.transaction.metadata.invoice_id;
 
-        console.log(invoiceId, body.transaction.status);
-
         if (invoiceId) {
           try {
             switch (body.transaction.status) {
@@ -281,36 +279,27 @@ export class InvoiceService {
                   });
                 }
 
-                console.log('finalizou o pagamento');
                 break;
               case 'refunded':
                 const invoice = await this.getInvoice(invoiceId);
                 const user = await this.userService.getOne(invoice.buyer.id);
-                console.log('chegou refunded', invoice, user);
 
-                try {
-                  const transaction = await this.pagarmeService.createFeeInvoice(
-                    invoice,
-                    user,
-                  );
-                  console.log('criou transaction', transaction);
+                const transaction = await this.pagarmeService.createFeeInvoice(
+                  invoice,
+                  user,
+                );
 
-                  await this.repo.update(invoiceId, {
-                    paymentStatus: body.transaction.status,
-                    feeAmount: transaction.amount,
-                    isFee: true,
-                    refunded: new Date(),
-                  });
+                await this.repo.update(invoiceId, {
+                  paymentStatus: body.transaction.status,
+                  feeAmount: transaction.amount,
+                  isFee: true,
+                  refunded: new Date(),
+                });
 
-                  this.invoiceGateway.server.emit(
-                    'refundInvoice',
-                    await this.getInvoice(invoiceId),
-                  );
-
-                  console.log('finalizou a taxa');
-                } catch (err) {
-                  throw new BadRequestException(err);
-                }
+                this.invoiceGateway.server.emit(
+                  'refundInvoice',
+                  await this.getInvoice(invoiceId),
+                );
 
                 break;
               default:
