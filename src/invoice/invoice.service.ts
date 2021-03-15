@@ -288,25 +288,29 @@ export class InvoiceService {
                 const user = await this.userService.getOne(invoice.buyer.id);
                 console.log('chegou refunded', invoice, user);
 
-                const transaction = await this.pagarmeService.createFeeInvoice(
-                  invoice,
-                  user,
-                );
-                console.log('criou transaction', transaction);
+                try {
+                  const transaction = await this.pagarmeService.createFeeInvoice(
+                    invoice,
+                    user,
+                  );
+                  console.log('criou transaction', transaction);
 
-                await this.repo.update(invoiceId, {
-                  paymentStatus: body.transaction.status,
-                  feeAmount: transaction.amount,
-                  isFee: true,
-                  refunded: new Date(),
-                });
+                  await this.repo.update(invoiceId, {
+                    paymentStatus: body.transaction.status,
+                    feeAmount: transaction.amount,
+                    isFee: true,
+                    refunded: new Date(),
+                  });
 
-                this.invoiceGateway.server.emit(
-                  'refundInvoice',
-                  await this.getInvoice(invoiceId),
-                );
+                  this.invoiceGateway.server.emit(
+                    'refundInvoice',
+                    await this.getInvoice(invoiceId),
+                  );
 
-                console.log('finalizou a taxa');
+                  console.log('finalizou a taxa');
+                } catch (err) {
+                  throw new BadRequestException(err);
+                }
 
                 break;
               default:
