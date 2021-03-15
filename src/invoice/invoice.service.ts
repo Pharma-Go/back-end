@@ -299,6 +299,11 @@ export class InvoiceService {
                   refunded: new Date(),
                 });
 
+                this.invoiceGateway.server.emit(
+                  'refundInvoice',
+                  await this.getInvoice(invoiceId),
+                );
+
                 console.log('finalizou a taxa');
 
                 break;

@@ -119,7 +119,7 @@ export class User extends BaseEntity<User> {
     () => Establishment,
     establishment => establishment.owner,
   )
-  establishments: Review[];
+  establishments: Establishment[];
 
   @ManyToMany(
     () => Establishment,
