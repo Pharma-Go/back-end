@@ -271,7 +271,7 @@ export class InvoiceService {
         if (invoiceId) {
           try {
             switch (body.transaction.status) {
-              case PaymentStatus.paid:
+              case 'paid':
                 const inv = await this.getInvoice(invoiceId);
 
                 if (!inv.isFee) {
@@ -283,7 +283,7 @@ export class InvoiceService {
 
                 console.log('finalizou o pagamento');
                 break;
-              case PaymentStatus.refunded:
+              case 'refunded':
                 const invoice = await this.getInvoice(invoiceId);
                 const user = await this.userService.getOne(invoice.buyer.id);
 
