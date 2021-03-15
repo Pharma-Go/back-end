@@ -286,11 +286,13 @@ export class InvoiceService {
               case 'refunded':
                 const invoice = await this.getInvoice(invoiceId);
                 const user = await this.userService.getOne(invoice.buyer.id);
+                console.log('chegou refunded', invoice, user);
 
                 const transaction = await this.pagarmeService.createFeeInvoice(
                   invoice,
                   user,
                 );
+                console.log('criou transaction', transaction);
 
                 await this.repo.update(invoiceId, {
                   paymentStatus: body.transaction.status,
