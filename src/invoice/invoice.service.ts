@@ -313,7 +313,10 @@ export class InvoiceService {
 
             if (invoice.strictAccepted) {
               this.invoiceGateway.server.emit('updateInvoice', invoice);
-              this.emitNewInvoice(invoice);
+
+              if (!invoice.isFee) {
+                this.emitNewInvoice(invoice);
+              }
             }
           } catch (err) {
             throw new BadRequestException(err);
