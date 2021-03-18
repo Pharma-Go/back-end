@@ -7,6 +7,10 @@ export class InvoiceDto {
   @Expose()
   discount: number;
 
+  @IsNumber()
+  @Expose()
+  deliveryFeeAmount: number;
+
   @IsArray()
   @Expose()
   itemProducts: {

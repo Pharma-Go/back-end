@@ -49,6 +49,18 @@ export class Establishment extends BaseEntity<Establishment> {
   })
   fee: number;
 
+  @Column({
+    nullable: true,
+    default: 5000,
+  })
+  maxDistance: number;
+
+  @Column({
+    nullable: true,
+    default: 200,
+  })
+  deliveryFeePerKm: number;
+
   @OneToMany(
     () => Product,
     product => product.establishment,

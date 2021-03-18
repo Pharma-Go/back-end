@@ -65,6 +65,12 @@ export class Invoice extends BaseEntity<Invoice> {
 
   @Column({
     nullable: true,
+    default: 0,
+  })
+  deliveryFeeAmount: number;
+
+  @Column({
+    nullable: true,
   })
   transactionId: number;
 
