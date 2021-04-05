@@ -4,7 +4,10 @@ import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EstablishmentDto } from './dto/establishment.dto';
 import { ProductService } from 'src/product/product.service';
-import { User } from 'src/user/user.entity';
+import { User, userBaseRelations } from 'src/user/user.entity';
+import { UserService } from 'src/user/user.service';
+import { CategoryService } from 'src/category/category.service';
+import { Category } from 'src/category/category.entity';
 
 @Injectable()
 export class EstablishmentService {
@@ -21,6 +24,8 @@ export class EstablishmentService {
     @InjectRepository(Establishment)
     private repo: Repository<Establishment>,
     private productService: ProductService,
+    private userService: UserService,
+    private categoryService: CategoryService,
   ) {}
 
   public async createEstablishment(
@@ -84,15 +89,18 @@ export class EstablishmentService {
     });
   }
 
-  public async getMostRated() {
-    return (
-      await this.repo
-        .createQueryBuilder('est')
-        .innerJoinAndSelect('est.reviews', 'reviews')
-        .orderBy('reviews.stars', 'DESC')
-        .leftJoinAndSelect('est.address', 'address')
-        .getMany()
-    ).slice(0, 3);
+  public async getMostRated(limit?: number) {
+    const query = this.repo
+      .createQueryBuilder('est')
+      .innerJoinAndSelect('est.reviews', 'reviews')
+      .orderBy('reviews.stars', 'DESC')
+      .leftJoinAndSelect('est.address', 'address');
+
+    if (limit) {
+      return query.limit(limit).getMany();
+    }
+
+    return query.getMany();
   }
 
   public async getMyEstablishments(user: User) {
@@ -105,6 +113,54 @@ export class EstablishmentService {
   }
 
   public async removeEstablishment(id: string) {
-    return this.repo.delete(id, );
+    return this.repo.delete(id);
+  }
+
+  public async getBestEstablishmentByCategory(user: User) {
+    return this.repo
+      .createQueryBuilder('e')
+      .addSelect(['count(p.category_id)'])
+      .leftJoinAndSelect('e.address', 'address')
+      .innerJoin('e.invoices', 'inv')
+      .innerJoin(
+        'invoice_item_products_item_product',
+        'ipp',
+        'ipp.invoice_id = inv.id',
+      )
+      .innerJoin('item_product', 'ip', 'ip.id = ipp.item_product_id')
+      .innerJoin('product', 'p', 'p.id = ip.product_id')
+      .innerJoin('category', 'c', 'c.id = p.category_id')
+      .where('inv.buyer_id = :id', { id: user.id })
+      .groupBy('c.id')
+      .addGroupBy('e.id')
+      .addGroupBy('address.id')
+      .orderBy('count', 'DESC')
+      .limit(3)
+      .getMany();
+  }
+
+  public async getSuggestions({ id }: User) {
+    const user = await this.userService.getOne(id, {
+      relations: [
+        ...userBaseRelations,
+        'invoices.itemProducts',
+        'invoices.itemProducts.product',
+        'invoices.itemProducts.product.category',
+      ],
+    });
+
+    const invoices = user.invoices;
+
+    if (invoices && invoices.length > 0) {
+      return this.getBestEstablishmentByCategory(user);
+    }
+
+    return this.repo
+      .createQueryBuilder('e')
+      .leftJoinAndSelect('e.invoices', 'invoices')
+      .leftJoinAndSelect('e.address', 'address')
+      .orderBy('invoices', 'DESC')
+      .limit(3)
+      .getMany();
   }
 }

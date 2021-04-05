@@ -72,6 +72,11 @@ export class EstablishmentController {
     return this.service.getMostRated();
   }
 
+  @Get('suggestions')
+  public getSuggestions(@CurrentUser() user: User) {
+    return this.service.getSuggestions(user);
+  }
+
   @Get('my')
   public getMyEstablishments(@CurrentUser() user: User) {
     return this.service.getMyEstablishments(user);
