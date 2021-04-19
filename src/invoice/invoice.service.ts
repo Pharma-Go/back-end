@@ -112,13 +112,7 @@ export class InvoiceService {
   }
 
   public async getOne(id: string, getBuyerAddress?: boolean): Promise<Invoice> {
-    let relations = [...this.baseRelations];
-
-    if (getBuyerAddress) {
-      relations = [...this.baseRelations, 'buyer.address'];
-    }
-
-    return this.repo.findOne(id, { relations });
+    return this.repo.findOne(id, { relations: this.baseRelations });
   }
 
   public async getAll(): Promise<Invoice[]> {
