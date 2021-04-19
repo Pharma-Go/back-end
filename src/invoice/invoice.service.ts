@@ -277,13 +277,18 @@ export class InvoiceService {
 
                 break;
               case 'refunded':
+                console.log('refunded');
                 const invoice = await this.getInvoice(invoiceId);
                 const user = await this.userService.getOne(invoice.buyer.id);
+
+                console.log('invoice', invoice, user);
 
                 const transaction = await this.pagarmeService.createFeeInvoice(
                   invoice,
                   user,
                 );
+
+                console.log('transaction', transaction);
 
                 await this.repo.update(invoiceId, {
                   paymentStatus: body.transaction.status,
@@ -291,6 +296,7 @@ export class InvoiceService {
                   isFee: true,
                   refunded: new Date(),
                 });
+                console.log('atualizou invoice');
 
                 this.invoiceGateway.server.emit(
                   'refundInvoice',
