@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as OAuth2Server from 'oauth2-server';
 import * as uuid from 'uuid';
@@ -7,6 +7,7 @@ import { OAuthClientService } from './oauth-client.service';
 import { RevokedService } from './revoked.service';
 import { OAuthCodeService } from './oauth-code.service';
 import { OAuthClient } from './oauth-client.entity';
+import { MailerService } from '@nestjs-modules/mailer';
 
 export interface JwtToken {
   iss?: string;
@@ -33,6 +34,7 @@ export class OAuthService
     private readonly oAuthClientService: OAuthClientService,
     private readonly revokedService: RevokedService,
     private readonly codeService: OAuthCodeService,
+    private readonly mailerService: MailerService,
   ) {}
 
   async generateAuthorizationCode() {
@@ -111,7 +113,7 @@ export class OAuthService
       <JwtToken>{
         sub: user.id,
         aud: client.id,
-        scope: [user.role],
+        scope: scope ? scope : [user.role],
       },
       {
         expiresIn: +client.accessTokenLifetime,
@@ -186,5 +188,36 @@ export class OAuthService
       payload.jti,
       new Date(payload.exp * 1000),
     );
+  }
+
+  public async requestRecoverPassword(email: string) {
+    try {
+      const client = await this.oAuthClientService.getClientByIdAndSecret(
+        '30fcc8d3-7cb4-4442-949e-294c26f21e14',
+        'pharmago',
+      );
+
+      const user = await this.userService.get({ where: { email } });
+
+      if (user) {
+        const token = await this.generateAccessToken(
+          { ...client, accessTokenLifetime: 7200 },
+          user,
+          'change_password',
+        );
+
+        this.mailerService.sendMail({
+          to: email,
+          from: 'noreply.pharmago@gmail.com',
+          subject: 'Recuperação de senha',
+          template: 'index',
+          context: {
+            token: token,
+          },
+        });
+      }
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 }

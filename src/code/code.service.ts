@@ -3,17 +3,13 @@ import { Cron } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Code } from './code.entity';
+import { randomBytes } from 'crypto';
 
 @Injectable()
 export class CodeService {
-  private min: number = 100000;
-  private max: number = 999999;
+  private length: number = 3;
 
   constructor(@InjectRepository(Code) private repo: Repository<Code>) {}
-
-  private generateCode(min: number, max: number): string {
-    return (Math.floor(Math.random() * (max - min + 1)) + min).toString();
-  }
 
   public compareTime(time1: Date, time2: Date) {
     return new Date(time1) > new Date(time2);
@@ -27,9 +23,8 @@ export class CodeService {
   }
 
   public async create(email: string) {
-    const code = this.generateCode(this.min, this.max);
+    const code = randomBytes(this.length).toString('hex');
     const expirationDate = this.generateExpirationDate();
-
     return this.repo.save({
       code,
       email,

@@ -11,6 +11,7 @@ import {
   BadRequestException,
   Headers,
   Body,
+  Param,
 } from '@nestjs/common';
 import { OAuthService } from './oauth.service';
 import * as OAuth2Server from 'oauth2-server';
@@ -40,6 +41,14 @@ export class OAuthController {
       new OAuth2Server.Response(res),
     );
 
+    console.log({
+      access_token: token.accessToken,
+      refresh_token: token.refreshToken,
+      client: token.client.id,
+      expires: Math.floor(
+        (token.accessTokenExpiresAt.getTime() - Date.now()) / 1000,
+      ),
+    });
     res.json({
       access_token: token.accessToken,
       refresh_token: token.refreshToken,
@@ -140,5 +149,11 @@ export class OAuthController {
   @Delete('token/revoke')
   revoke() {
     // return this.oAuthService.revokeToken(this.jwt)
+  }
+
+  @OAuthPublic()
+  @Post('requestRecoverPassword/:email')
+  public requestRecoverPassword(@Param('email') email: string) {
+    return this.oAuthService.requestRecoverPassword(email);
   }
 }

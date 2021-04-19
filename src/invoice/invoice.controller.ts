@@ -46,6 +46,11 @@ export class InvoiceController {
     return this.service.createInvoice(dto, user);
   }
 
+  @Post('teste')
+  public teste() {
+    return this.service.teste();
+  }
+
   @Get()
   public getAll() {
     return this.service.getAll();
@@ -69,6 +74,11 @@ export class InvoiceController {
   @Get('stricteds')
   public getInvoicesStricteds(@CurrentUser() user: User) {
     return this.service.getInvoicesStricteds(user);
+  }
+
+  @Get('myDeliveries')
+  public getMyDeliveries(@CurrentUser() user: User) {
+    return this.service.getMyDeliveries(user);
   }
 
   @Get(':id')

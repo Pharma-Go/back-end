@@ -18,6 +18,7 @@ export class InvoiceService {
     'itemProducts.product',
     'paymentCard',
     'establishment',
+    'buyer.address',
   ];
 
   constructor(
@@ -333,5 +334,21 @@ export class InvoiceService {
     } catch (err) {
       throw new BadRequestException(err);
     }
+  }
+
+  public getMyDeliveries(user: User) {
+    return this.repo
+      .createQueryBuilder('inv')
+      .innerJoinAndSelect('inv.deliverer', 'us', 'us.id = inv.deliverer_id')
+      .innerJoinAndSelect('inv.itemProducts', 'itemProducts')
+      .innerJoinAndSelect('inv.buyer', 'ibuy')
+      .innerJoinAndSelect('ibuy.address', 'address')
+      .where('inv.deliverer_id = :user', { user: user.id })
+      .andWhere('inv.delivered = :delivered', { delivered: true })
+      .getMany();
+  }
+
+  public teste() {
+    this.invoiceGateway.server.emit('newInvoice');
   }
 }

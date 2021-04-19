@@ -31,7 +31,7 @@ import {
 @OAuthActionsScope({
   'Create-Many': ['admin'],
   'Create-One': ['admin', 'employee', 'default'],
-  'Update-One': ['admin', 'employee', 'default'],
+  'Update-One': ['admin', 'employee', 'default', 'change_password'],
   'Delete-All': ['admin'],
   'Delete-One': ['admin', 'employee', 'default'],
   'Read-All': ['admin', 'employee', 'default'],
@@ -40,12 +40,6 @@ import {
 })
 export class UserController {
   constructor(public readonly service: UserService) {}
-
-  @OAuthPublic()
-  @Post('requestRecoverPassword/:email')
-  public requestRecoverPassword(@Param('email') email: string) {
-    return this.service.requestRecoverPassword(email);
-  }
 
   @OAuthPublic()
   @Post('changeRecoverPassword/:email')

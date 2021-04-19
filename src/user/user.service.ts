@@ -13,6 +13,8 @@ import { BCryptTransformer } from 'src/lib/bcrypt';
 import { MailerService } from '@nestjs-modules/mailer';
 import { CodeService } from 'src/code/code.service';
 import { Code } from 'src/code/code.entity';
+import { OAuthService } from 'src/oauth/oauth.service';
+import { OAuthClientService } from 'src/oauth/oauth-client.service';
 @Injectable()
 export class UserService {
   public baseRelations: string[];
@@ -137,33 +139,8 @@ export class UserService {
     }
   }
 
-  public async requestRecoverPassword(email: string) {
-    if (
-      await this.repo
-        .createQueryBuilder()
-        .where('email = :email', { email })
-        .getOne()
-    ) {
-      try {
-        const code = await this.codeService.create(email);
-
-        await this.mailerService.sendMail({
-          to: email,
-          from: 'noreply.pharmago@gmail.com',
-          subject: 'Recuperação de senha',
-          template: 'index',
-          context: {
-            code: code.code,
-          },
-        });
-      } catch (err) {
-        throw new BadRequestException(err);
-      }
-
-      return;
-    }
-
-    throw new BadRequestException('Não existe um usuário com este email.');
+  public async get(option: FindOneOptions) {
+    return this.repo.findOne(option);
   }
 
   public async addFavorite(

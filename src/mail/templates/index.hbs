@@ -7,21 +7,21 @@
       <h2 style="color: #292536; text-align: center">
         Recuperar senha
       </h2>
-      <h3 style="text-align: center; color: #292536">
-        Código de recuperação: {{ code }}
-      </h3>
+
       <p style="text-align: center; font-size: 13px">*Obs: Código valido apenas por 2 horas</p>
       <p>
         Para recuperar senha clique no botão abaixo
       </p>
       <div
-        style="margin: 20px auto; width: 180px; padding: 10px 20px; background-color: #4736B9; border-radius: 5px; text-align: center;">
-        <a href="http://localhost:3000/recuperar-senha" target="_blank" rel="noopener noreferrer"
+        style="margin: 20px auto; width: 180px; padding: 10px 20px; background-color: #0064FA; border-radius: 5px; text-align: center;">
+        <a href="http://localhost:8080/#/configuracoes/perfil/senha?token={{token}}" target="_blank"
+          rel="noopener noreferrer"
           style="text-decoration: none; color: #fcfcfc; font-size: 18px; margin: 0 auto;">Recuperar senha</a>
       </div>
       <p>Ou acesse o seguinte link:</p>
-      <a href="http://localhost:3000/recuperar-senha" target="_blank" rel="noopener noreferrer"
-        style="text-decoration: none; font-size: 18px; margin: 0 auto;">http://localhost:3000/recuperar-senha</a>
+      <a href="http://localhost:8080/#/configuracoes/perfil/senha?token={{token}}" target="_blank"
+        rel="noopener noreferrer"
+        style="text-decoration: none; font-size: 18px; margin: 0 auto; font-size: 12px;">http://localhost:8080/#/configuracoes/perfil/senha?token={{token}}</a>
     </div>
   </center>
 </body>
