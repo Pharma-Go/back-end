@@ -33,6 +33,7 @@ export class InvoiceService {
     invoiceDto.buyer = user.id;
     invoiceDto.total = 0;
     invoiceDto.strictAccepted = true;
+    invoiceDto.total += invoiceDto.deliveryFeeAmount;
 
     if (!invoiceDto.itemProducts || invoiceDto.itemProducts?.length === 0) {
       throw new BadRequestException(
