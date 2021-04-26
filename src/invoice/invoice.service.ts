@@ -133,6 +133,19 @@ export class InvoiceService {
       );
     }
 
+    const hasOpenedInvoice = await this.repo.findOne({
+      where: {
+        deliverer: {
+          id: user.id,
+        },
+        delivered: false,
+      },
+    });
+
+    if (hasOpenedInvoice) {
+      throw new BadRequestException('Você já possuí um pedido em entrega!');
+    }
+
     const invoice = await this.getInvoice(id);
 
     if (invoice.paymentStatus !== PaymentStatus.paid) {
@@ -146,13 +159,13 @@ export class InvoiceService {
         deliverer: user,
         delivererAccepted: true,
       });
+      console.log('aaa');
+      this.invoiceGateway.server.emit('delivererAccept', id);
+
+      return this.getInvoice(id);
     } catch (err) {
       throw new BadRequestException(err);
     }
-
-    this.invoiceGateway.server.emit('delivererAccept', id);
-
-    return this.getInvoice(id);
   }
 
   public async strictUpdate(
@@ -199,6 +212,7 @@ export class InvoiceService {
     return this.repo
       .createQueryBuilder('invoice')
       .innerJoinAndSelect('invoice.itemProducts', 'products')
+      .innerJoinAndSelect('invoice.establishment', 'establishment')
       .where('invoice.buyer = :id', { id: user.id })
       .orderBy('invoice.paymentDate', 'DESC')
       .limit(3)
@@ -277,18 +291,13 @@ export class InvoiceService {
 
                 break;
               case 'refunded':
-                console.log('refunded');
                 const invoice = await this.getInvoice(invoiceId);
                 const user = await this.userService.getOne(invoice.buyer.id);
-
-                console.log('invoice', invoice, user);
 
                 const transaction = await this.pagarmeService.createFeeInvoice(
                   invoice,
                   user,
                 );
-
-                console.log('transaction', transaction);
 
                 await this.repo.update(invoiceId, {
                   paymentStatus: body.transaction.status,
@@ -296,7 +305,6 @@ export class InvoiceService {
                   isFee: true,
                   refunded: new Date(),
                 });
-                console.log('atualizou invoice');
 
                 this.invoiceGateway.server.emit(
                   'refundInvoice',
@@ -347,6 +355,20 @@ export class InvoiceService {
       .where('inv.deliverer_id = :user', { user: user.id })
       .andWhere('inv.delivered = :delivered', { delivered: true })
       .getMany();
+  }
+
+  public getActiveDelivery(user: User) {
+    return this.repo.findOne({
+      relations: this.baseRelations,
+      where: {
+        deliverer: {
+          id: user.id,
+        },
+        delivered: false,
+        isFee: false,
+        strictAccepted: true,
+      },
+    });
   }
 
   public teste() {

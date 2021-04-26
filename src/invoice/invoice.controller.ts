@@ -76,6 +76,11 @@ export class InvoiceController {
     return this.service.getInvoicesStricteds(user);
   }
 
+  @Get('activeDelivery')
+  public getActiveDelivery(@CurrentUser() user: User) {
+    return this.service.getActiveDelivery(user);
+  }
+
   @Get('myDeliveries')
   public getMyDeliveries(@CurrentUser() user: User) {
     return this.service.getMyDeliveries(user);
