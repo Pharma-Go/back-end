@@ -209,14 +209,26 @@ export class InvoiceService {
   }
 
   public async getRecentInvoices(user: User): Promise<Invoice[]> {
-    return this.repo
-      .createQueryBuilder('invoice')
-      .innerJoinAndSelect('invoice.itemProducts', 'products')
-      .innerJoinAndSelect('invoice.establishment', 'establishment')
-      .where('invoice.buyer = :id', { id: user.id })
-      .orderBy('invoice.paymentDate', 'DESC')
-      .limit(3)
-      .getMany();
+    return this.repo.find({
+      relations: this.baseRelations,
+      where: {
+        buyer: {
+          id: user.id,
+        },
+      },
+      order: {
+        paymentDate: 'DESC',
+      },
+      take: 3,
+    });
+    // return this.repo
+    //   .createQueryBuilder('invoice')
+    //   .innerJoinAndSelect('invoice.itemProducts', 'products')
+    //   .innerJoinAndSelect('invoice.establishment', 'establishment')
+    //   .where('invoice.buyer = :id', { id: user.id })
+    //   .orderBy('invoice.paymentDate', 'DESC')
+    //   .limit(3)
+    //   .getMany();
   }
 
   public sendDelivererLocation(invoiceId: string) {
