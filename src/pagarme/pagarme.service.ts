@@ -4,7 +4,8 @@ import { App } from 'src/main';
 import { Product } from 'src/product/product.entity';
 import { User } from 'src/user/user.entity';
 
-const ngrok = 'http://2e7c8057b9f8.ngrok.io';
+// const ngrok = 'http://2e7c8057b9f8.ngrok.io';
+const ngrok = 'https://pharmago-backend.herokuapp.com';
 
 @Injectable()
 export class PagarmeService {
