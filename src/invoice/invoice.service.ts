@@ -87,8 +87,6 @@ export class InvoiceService {
           invoice,
         );
 
-        console.log(pagarmeInvoice.id);
-
         await this.repo.update(generatedInvoice.id, {
           transactionId: pagarmeInvoice.id,
         });
@@ -221,14 +219,6 @@ export class InvoiceService {
       },
       take: 3,
     });
-    // return this.repo
-    //   .createQueryBuilder('invoice')
-    //   .innerJoinAndSelect('invoice.itemProducts', 'products')
-    //   .innerJoinAndSelect('invoice.establishment', 'establishment')
-    //   .where('invoice.buyer = :id', { id: user.id })
-    //   .orderBy('invoice.paymentDate', 'DESC')
-    //   .limit(3)
-    //   .getMany();
   }
 
   public sendDelivererLocation(invoiceId: string) {
@@ -306,10 +296,9 @@ export class InvoiceService {
                 const invoice = await this.getInvoice(invoiceId);
                 const user = await this.userService.getOne(invoice.buyer.id);
 
-                const transaction = await this.pagarmeService.createFeeInvoice(
-                  invoice,
-                  user,
-                );
+                const transaction = await this.pagarmeService
+                  .createFeeInvoice(invoice, user)
+                  .catch(() => {});
 
                 await this.repo.update(invoiceId, {
                   paymentStatus: body.transaction.status,

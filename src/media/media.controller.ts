@@ -27,7 +27,7 @@ export class MediaController {
 
   @Post()
   @UseInterceptors(FileInterceptor('image'))
-  uploadFile(@UploadedFile() file) {
+  uploadFile(@UploadedFile() file: any) {
     return this.service.upload(file.buffer);
   }
 }

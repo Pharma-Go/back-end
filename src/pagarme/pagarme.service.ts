@@ -4,6 +4,8 @@ import { App } from 'src/main';
 import { Product } from 'src/product/product.entity';
 import { User } from 'src/user/user.entity';
 
+const ngrok = 'http://2e7c8057b9f8.ngrok.io';
+
 @Injectable()
 export class PagarmeService {
   public async createInvoiceInPagarme(
@@ -31,8 +33,9 @@ export class PagarmeService {
         },
         capture: true,
         async: true,
-        postback_url:
-          'http://pharmago-backend.herokuapp.com/invoices/pagarme/postback',
+        postback_url: `${ngrok}/invoices/pagarme/postback`,
+        // postback_url:
+        //   'http://pharmago-backend.herokuapp.com/invoices/pagarme/postback',
         payment_method: invoice.paymentCard.method.toLowerCase(),
         billing: {
           name: 'Local de entrega',
@@ -92,8 +95,7 @@ export class PagarmeService {
         },
         capture: true,
         async: true,
-        postback_url:
-          'http://pharmago-backend.herokuapp.com/invoices/pagarme/postback',
+        postback_url: `${ngrok}/invoices/pagarme/postback`,
         payment_method: invoice.paymentCard.method.toLowerCase(),
         billing: {
           name: 'Local da taxa',
